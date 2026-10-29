@@ -3,7 +3,7 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2 class="section-title">Store Oversight</h2>
+<h2 class="section-title">@await Html.PartialAsync("_AdminIcon", "shield") Store Oversight</h2>
 <div class="panel">
     <h3 class="panel-title">Compliance Checks</h3>
     <ul class="mini-list">
@@ -12,7 +12,7 @@
         <li>All payment gateway logs synced successfully.</li>
     </ul>
     <div class="inline-actions">
-        <button class="btn" id="refreshOversightBtn">Refresh Oversight Data</button>
+        <button class="btn" id="refreshOversightBtn">@await Html.PartialAsync("_AdminIcon", "refresh")<span>Refresh Oversight Data</span></button>
     </div>
 </div>
 

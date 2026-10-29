@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
             
             if (saveProfileBtn) {
                 saveProfileBtn.disabled = true;
-                saveProfileBtn.textContent = 'Saving...';
+                adminButtonLabel(saveProfileBtn, 'Saving...');
             }
 
             const fd = new FormData();
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } finally {
                 if (saveProfileBtn) {
                     saveProfileBtn.disabled = false;
-                    saveProfileBtn.textContent = 'Save changes';
+                    adminButtonLabel(saveProfileBtn, 'Save changes');
                 }
             }
         });
@@ -118,31 +118,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobile = window.matchMedia('(max-width: 768px)');
     const focusable = root => [...root.querySelectorAll('a[href], button, input, select, textarea, [tabindex="0"]')]
         .filter(el => !el.disabled && !el.hidden && el.getClientRects().length);
+    let activeOverlay = null;
+    const openDialogs = [];
+    const previousFocus = new WeakMap();
 
     function setMenu(open) {
         const expanded = open && mobile.matches;
         document.body.classList.toggle('nav-open', expanded);
         menu.setAttribute('aria-expanded', String(expanded));
         menu.setAttribute('aria-label', expanded ? 'Close navigation' : 'Open navigation');
-        sidebar.inert = mobile.matches && !expanded;
-        main.inert = expanded;
-        document.body.style.overflow = expanded ? 'hidden' : '';
-        if (expanded) focusable(sidebar)[0]?.focus();
+        sidebar.inert = !!activeOverlay || (mobile.matches && !expanded);
+        main.inert = !!activeOverlay || expanded;
+        document.body.style.overflow = activeOverlay || expanded ? 'hidden' : '';
+        if (expanded && !activeOverlay) focusable(sidebar)[0]?.focus();
     }
     menu.addEventListener('click', () => setMenu(!document.body.classList.contains('nav-open')));
     scrim.addEventListener('click', () => { setMenu(false); menu.focus(); });
     mobile.addEventListener('change', () => setMenu(false));
     sidebar.inert = mobile.matches;
 
-    let activeOverlay = null;
-    let previousFocus = null;
     const overlays = new Set();
     function syncDialog(overlay) {
-        const open = overlay.classList.contains('active') || overlay.style.display === 'flex';
+        const open = overlay.style.display !== 'none' &&
+            (overlay.classList.contains('active') || overlay.style.display === 'flex');
         overlay.setAttribute('aria-hidden', String(!open));
-        if (open && activeOverlay !== overlay) {
-            previousFocus = document.activeElement;
+        const index = openDialogs.indexOf(overlay);
+        if (open && index === -1) {
+            previousFocus.set(overlay, document.activeElement);
+            openDialogs.push(overlay);
             activeOverlay = overlay;
+            setMenu(false);
             const dialog = overlay.querySelector('.profile-modal, .confirm-dialog');
             if (dialog) {
                 dialog.setAttribute('role', 'dialog');
@@ -158,21 +163,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 const target = dialog.querySelector('.confirm-btn.cancel') || focusable(dialog)[0] || dialog;
                 target.focus();
             }
-            main.inert = true;
-            sidebar.inert = true;
-            document.body.style.overflow = 'hidden';
-        } else if (!open && activeOverlay === overlay) {
-            activeOverlay = null;
-            main.inert = false;
-            sidebar.inert = mobile.matches;
-            document.body.style.overflow = '';
-            if (previousFocus?.isConnected) previousFocus.focus();
+        } else if (!open && index !== -1) {
+            openDialogs.splice(index, 1);
+            if (activeOverlay !== overlay) return;
+            activeOverlay = openDialogs.at(-1) || null;
+            setMenu(false);
+            const target = previousFocus.get(overlay);
+            if (target?.isConnected && !target.closest('[inert]')) target.focus();
+            else if (mobile.matches && !activeOverlay) menu.focus();
         }
     }
     function watchDialogs() {
         document.querySelectorAll('.modal-overlay, #customConfirmOverlay').forEach(overlay => {
             if (overlays.has(overlay)) return;
             overlays.add(overlay);
+            // Page dialogs must sit outside the main content that becomes inert.
+            if (overlay.parentElement !== document.body) document.body.appendChild(overlay);
             new MutationObserver(() => syncDialog(overlay)).observe(overlay, {
                 attributes: true, attributeFilter: ['class', 'style']
             });
@@ -229,6 +235,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (grid) new MutationObserver(filterPage).observe(grid, { childList: true });
 });
 
+function adminIcon(name) {
+    return `<svg class="ui-icon" data-icon="${name}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="/images/admin-icons.svg#${name}"></use></svg>`;
+}
+
+function adminButtonLabel(button, text) {
+    (button.querySelector('.button-label') || button).textContent = text;
+}
+
 function adminNotify(message) {
     let toast = document.getElementById('adminToast');
     if (!toast) {
@@ -238,7 +252,10 @@ function adminNotify(message) {
         toast.setAttribute('role', 'status');
         document.body.appendChild(toast);
     }
-    toast.textContent = message;
+    toast.innerHTML = adminIcon('info');
+    const label = document.createElement('span');
+    label.textContent = message;
+    toast.appendChild(label);
     toast.hidden = false;
     clearTimeout(adminNotify.timer);
     adminNotify.timer = setTimeout(() => { toast.hidden = true; }, 5000);

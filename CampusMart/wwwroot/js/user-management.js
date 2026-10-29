@@ -31,7 +31,10 @@ function showToast(message, type = 'error') {
     }
     const toast = document.createElement('div');
     toast.className = `custom-toast ${type}`;
-    toast.textContent = message;
+    toast.innerHTML = adminIcon(type === 'error' ? 'alert' : 'check');
+    const label = document.createElement('span');
+    label.textContent = message;
+    toast.appendChild(label);
     toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
     container.appendChild(toast);
     
@@ -50,12 +53,12 @@ function showConfirm(message) {
             overlay.id = 'customConfirmOverlay';
             overlay.innerHTML = `
                 <div class="confirm-dialog">
-                    <div class="confirm-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 10 18H2L12 3Zm0 6v5m0 3h.01"/></svg></div>
+                    <div class="confirm-icon">${adminIcon('alert')}</div>
                     <div class="confirm-title">Are you sure?</div>
                     <div class="confirm-message" id="confirmMsgText"></div>
                     <div class="confirm-actions">
-                        <button class="confirm-btn cancel" id="confirmCancelBtn">Cancel</button>
-                        <button class="confirm-btn danger" id="confirmOkBtn">Yes, Delete</button>
+                        <button class="confirm-btn cancel" id="confirmCancelBtn">${adminIcon('close')} Cancel</button>
+                        <button class="confirm-btn danger" id="confirmOkBtn">${adminIcon('trash')} Yes, Delete</button>
                     </div>
                 </div>
             `;
@@ -76,11 +79,6 @@ function showConfirm(message) {
 // ── Event Listeners ──
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Close modals on Escape
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') ['addStudentModal', 'viewStudentModal', 'editStudentModal'].forEach(id => closeModal(id));
-    });
-
     // Close on overlay click
     document.addEventListener('click', e => {
         if (e.target.classList.contains('modal-overlay')) {
@@ -124,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const btn = document.getElementById('saveStudentBtn');
             btn.disabled = true;
-            btn.textContent = 'Creating...';
+            adminButtonLabel(btn, 'Creating...');
 
             const fd = new FormData();
             fd.append('FirstName', document.getElementById('newFirstName').value);
@@ -156,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 showToast('Network error.');
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'Create Account';
+                adminButtonLabel(btn, 'Create Account');
             }
         });
     }
@@ -168,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const btn = document.getElementById('updateStudentBtn');
             btn.disabled = true;
-            btn.textContent = 'Saving...';
+            adminButtonLabel(btn, 'Saving...');
 
             const fd = new FormData();
             fd.append('Id', document.getElementById('editStudentIdHidden').value);
@@ -197,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 showToast('Network error.');
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'Save Changes';
+                adminButtonLabel(btn, 'Save Changes');
             }
         });
     }

@@ -47,7 +47,7 @@
         <div class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle" tabindex="-1">
             <div class="modal-header">
                 <h2 class="modal-title" id="profileModalTitle">Edit profile</h2>
-                <button class="close-modal" id="closeProfileModal" type="button" aria-label="Close profile editor">&times;</button>
+                <button class="close-modal" id="closeProfileModal" type="button" aria-label="Close profile editor">@await Html.PartialAsync("_AdminIcon", "close")</button>
             </div>
             <form id="adminQuickEditForm" enctype="multipart/form-data">
                 <div class="profile-pic-edit">
@@ -59,7 +59,7 @@
                     {
                         <img src="~/images/avatar-placeholder.svg" alt="Profile preview" class="profile-pic-preview" id="modalPicPreview" />
                     }
-                    <button class="btn-outline" type="button" id="changeProfilePicBtn">Change picture</button>
+                    <button class="btn-outline" type="button" id="changeProfilePicBtn">@await Html.PartialAsync("_AdminIcon", "image")<span>Change picture</span></button>
                     <input type="file" id="profilePicInput" name="avatarFile" hidden accept="image/*" />
                 </div>
                 <div class="modal-form-group">
@@ -74,7 +74,7 @@
                     <label class="modal-label" for="profileCourseInput">Role</label>
                     <input type="text" class="modal-input" id="profileCourseInput" value="Administrator" readonly />
                 </div>
-                <button class="btn-save" id="saveProfileBtn" type="submit">Save changes</button>
+                <button class="btn-save" id="saveProfileBtn" type="submit">@await Html.PartialAsync("_AdminIcon", "save")<span class="button-label">Save changes</span></button>
             </form>
         </div>
     </div>

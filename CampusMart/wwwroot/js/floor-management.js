@@ -45,7 +45,10 @@ function showToast(message, type = 'error') {
     }
     const toast = document.createElement('div');
     toast.className = `custom-toast ${type}`;
-    toast.textContent = message;
+    toast.innerHTML = adminIcon(type === 'error' ? 'alert' : 'check');
+    const label = document.createElement('span');
+    label.textContent = message;
+    toast.appendChild(label);
     toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
     container.appendChild(toast);
     
@@ -68,12 +71,12 @@ function showConfirm(message) {
             overlay.id = 'customConfirmOverlay';
             overlay.innerHTML = `
                 <div class="confirm-dialog">
-                    <div class="confirm-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 10 18H2L12 3Zm0 6v5m0 3h.01"/></svg></div>
+                    <div class="confirm-icon">${adminIcon('alert')}</div>
                     <div class="confirm-title">Are you sure?</div>
                     <div class="confirm-message" id="confirmMsgText"></div>
                     <div class="confirm-actions">
-                        <button class="confirm-btn cancel" id="confirmCancelBtn">Cancel</button>
-                        <button class="confirm-btn danger" id="confirmOkBtn">Yes, Delete</button>
+                        <button class="confirm-btn cancel" id="confirmCancelBtn">${adminIcon('close')} Cancel</button>
+                        <button class="confirm-btn danger" id="confirmOkBtn">${adminIcon('trash')} Yes, Delete</button>
                     </div>
                 </div>
             `;
@@ -100,14 +103,7 @@ function showConfirm(message) {
 // Close modal when clicking on overlay background (not the modal card itself)
 document.addEventListener('click', function (e) {
     if (e.target.classList.contains('modal-overlay') && e.target.id !== 'profileModal') {
-        e.target.style.display = 'none';
-    }
-});
-
-// Close modals on Escape key
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') {
-        ['addFloorModal', 'stallModal', 'stallDetailModal'].forEach(id => closeModal(id));
+        closeModal(e.target.id);
     }
 });
 
@@ -258,9 +254,9 @@ function renderStalls() {
                 <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8v5l3 2M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z"/></svg> ${formatTime(s.openTime)} — ${formatTime(s.closeTime)}
             </div>
             <div class="stall-actions">
-                <button class="btn" onclick="openEditStall(${s.id})">Edit</button>
-                <button class="btn" onclick="openStallDetail(${s.id})">View items</button>
-                <button class="btn warn" onclick="toggleStall(${s.id})">${s.isActive ? 'Deactivate' : 'Activate'}</button>
+                <button class="btn" onclick="openEditStall(${s.id})">${adminIcon('edit')}<span>Edit</span></button>
+                <button class="btn" onclick="openStallDetail(${s.id})">${adminIcon('box')}<span>View items</span></button>
+                <button class="btn warn" onclick="toggleStall(${s.id})">${adminIcon(s.isActive ? 'pause' : 'play')}<span>${s.isActive ? 'Deactivate' : 'Activate'}</span></button>
             </div>
         </article>`;
     }).join('');
@@ -321,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!name) { showToast('Please enter a floor name.', 'error'); return; }
 
             saveFloorBtn.disabled = true;
-            saveFloorBtn.textContent = 'Creating...';
+            adminButtonLabel(saveFloorBtn, 'Creating...');
 
             const result = await apiFetch(`${API}/floors`, {
                 method: 'POST',
@@ -330,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             saveFloorBtn.disabled = false;
-            saveFloorBtn.textContent = 'Create Floor';
+            adminButtonLabel(saveFloorBtn, 'Create Floor');
 
             if (result) {
                 closeModal('addFloorModal');
@@ -347,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!currentFloorId) { showToast('Please create a floor first.', 'error'); return; }
             document.getElementById('stallEditId').value = '';
             document.getElementById('stallModalTitle').textContent = 'Create Stall';
-            document.getElementById('saveStallBtn').textContent = 'Create Stall';
+            adminButtonLabel(document.getElementById('saveStallBtn'), 'Create Stall');
             document.getElementById('stallForm').reset();
             document.getElementById('stallImagePreview').innerHTML = '';
             showModal('stallModal');
@@ -376,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (imgInput.files.length > 0) fd.append('Image', imgInput.files[0]);
 
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Saving...';
+            adminButtonLabel(submitBtn, 'Saving...');
 
             let url = `${API}/stalls`;
             let method = 'POST';
@@ -388,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await apiFetch(url, { method, body: fd });
 
             submitBtn.disabled = false;
-            submitBtn.textContent = editId ? 'Save Changes' : 'Create Stall';
+            adminButtonLabel(submitBtn, editId ? 'Save Changes' : 'Create Stall');
 
             if (result) {
                 closeModal('stallModal');
@@ -455,7 +451,7 @@ function openEditStall(id) {
 
     document.getElementById('stallEditId').value = id;
     document.getElementById('stallModalTitle').textContent = 'Edit Stall';
-    document.getElementById('saveStallBtn').textContent = 'Save Changes';
+    adminButtonLabel(document.getElementById('saveStallBtn'), 'Save Changes');
     document.getElementById('stallName').value = stall.name;
     document.getElementById('stallNumber').value = stall.stallNumber;
     document.getElementById('stallOwner').value = stall.ownerName;
@@ -524,7 +520,7 @@ async function loadStallItems(stallId) {
                 <div style="font-weight:800; color:var(--primary);">₱${Number(item.price).toFixed(2)}</div>
                 <div style="font-size:11px; color:var(--text-muted);">Stock: ${item.stock}</div>
             </div>
-            <button class="btn warn" style="padding:4px 8px; font-size:12px;" onclick="deleteStallItem(${item.id}, ${stallId})">✕</button>
+            <button class="btn warn" style="padding:4px 8px;" aria-label="Delete item" title="Delete item" onclick="deleteStallItem(${item.id}, ${stallId})">${adminIcon('trash')}</button>
         </div>
     `).join('');
 }

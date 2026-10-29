@@ -3,7 +3,7 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2 class="section-title" style="margin-top:0;">Platform Settings</h2>
+<h2 class="section-title" style="margin-top:0;">@await Html.PartialAsync("_AdminIcon", "settings") Platform Settings</h2>
 <div class="section-subtitle">Configure system-wide settings for CampusMart.</div>
 
 <div class="panel" style="margin-top: 24px;">
@@ -23,6 +23,6 @@
                 <input type="checkbox" style="width: 18px; height: 18px;"> Enable Maintenance Mode
             </label>
         </div>
-        <button type="button" class="btn" style="background: var(--primary); color: #111;">Save Settings</button>
+        <button type="button" class="btn" style="background: var(--primary); color: #111;">@await Html.PartialAsync("_AdminIcon", "save")<span>Save Settings</span></button>
     </form>
 </div>

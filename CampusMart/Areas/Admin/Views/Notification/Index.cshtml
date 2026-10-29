@@ -5,10 +5,10 @@
 
 <div style="display: flex; justify-content: space-between; align-items: flex-end;">
     <div>
-        <h2 class="section-title" style="margin-top:0;">Notifications</h2>
+        <h2 class="section-title" style="margin-top:0;">@await Html.PartialAsync("_AdminIcon", "bell") Notifications</h2>
         <div class="section-subtitle">System alerts and administrative notifications.</div>
     </div>
-    <button class="btn">Mark All as Read</button>
+    <button class="btn">@await Html.PartialAsync("_AdminIcon", "check")<span>Mark All as Read</span></button>
 </div>
 
 <div class="table-wrap" style="margin-top: 24px; padding: 16px;">

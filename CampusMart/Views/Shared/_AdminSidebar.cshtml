@@ -32,7 +32,7 @@
     <div class="admin-sidebar-bottom">
         <nav class="admin-navigation" aria-label="Account navigation">
             <a asp-area="" asp-controller="Home" asp-action="HomeIndex" class="admin-nav">
-                @await Html.PartialAsync("_AdminIcon", "orders")<span>View marketplace</span>
+                @await Html.PartialAsync("_AdminIcon", "store")<span>View marketplace</span>
             </a>
             <a asp-area="Admin" asp-controller="Settings" asp-action="Index" class="admin-nav @(currentController == "Settings" ? "active" : "")" aria-current="@(currentController == "Settings" ? "page" : null)">
                 @await Html.PartialAsync("_AdminIcon", "settings")<span>Settings</span>
