@@ -1,0 +1,81 @@
+@{
+    ViewData["Title"] = "Rentals";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <p class="welcome-text animate-fade-in">Premium access to essential academic tools, high-end laboratory equipment, and exclusive campus spaces.</p>
+
+    <div class="section-header animate-fade-in delay-1">
+        <h2 class="section-title">My Active Rentals</h2>
+        <a href="#" class="view-all">VIEW ALL STATUS</a>
+    </div>
+
+    <div class="rentals-grid animate-fade-in delay-1">
+        <div class="rental-card">
+            <div class="more-icon"><div class="more-dot"></div><div class="more-dot"></div><div class="more-dot"></div></div>
+            <span class="rental-badge">DUE IN 3 DAYS</span>
+            <div><h3 class="rental-title">Premium Locker #402</h3><p class="rental-sub">Engineering Hall, Level 2</p></div>
+            <div class="rental-meta"><div class="access-type"><div class="access-icon">🔑</div> Digital Key</div></div>
+        </div>
+        <div class="rental-card">
+            <div class="more-icon"><div class="more-dot"></div><div class="more-dot"></div><div class="more-dot"></div></div>
+            <span class="rental-badge" style="color:var(--text-muted);background:rgba(255,255,255,.05);border:1px solid var(--border-subtle)">SESSION ENDS 2:00 PM</span>
+            <div><h3 class="rental-title">Mass Spectrometer</h3><p class="rental-sub">Chemistry Lab B</p></div>
+            <div class="progress-bar"><div class="progress-fill"></div></div>
+        </div>
+        <div class="rental-card new-booking-card">
+            <div class="new-icon">⊕</div>
+            <div><h3 class="new-title">New Booking</h3><p class="new-sub">Explore available spaces</p></div>
+        </div>
+    </div>
+
+    <div class="animate-fade-in delay-2"><span class="filter-pill">All Equipment</span></div>
+
+    <div class="equipment-grid animate-fade-in delay-2">
+        <div class="eq-card">
+            <div class="eq-img-container">
+                <img src="https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?q=80&w=2070&auto=format&fit=crop" alt="Microscope">
+                <span class="eq-badge">SCIENCE</span>
+            </div>
+            <div class="eq-content">
+                <div class="eq-header"><h3 class="eq-title">Nikon ECLIPSE<br>Ti2</h3><div class="eq-price">$45<span>/hr</span></div></div>
+                <p class="eq-desc">High-performance inverted research microscope system.</p>
+                <button class="btn-rent">Rent Now</button>
+            </div>
+        </div>
+        <div class="eq-card">
+            <div class="eq-img-container">
+                <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop" alt="Meeting Room">
+                <span class="eq-badge">SPACES</span>
+            </div>
+            <div class="eq-content">
+                <div class="eq-header"><h3 class="eq-title">Skyline Suite<br>4A</h3><div class="eq-price">$120<span>/day</span></div></div>
+                <p class="eq-desc">Private study lounge with panoramic campus views.</p>
+                <button class="btn-rent">Rent Now</button>
+            </div>
+        </div>
+        <div class="eq-card">
+            <div class="eq-img-container">
+                <img src="https://images.unsplash.com/photo-1580584126903-c17d41830450?q=80&w=1939&auto=format&fit=crop" alt="Lockers">
+                <span class="eq-badge">STORAGE</span>
+            </div>
+            <div class="eq-content">
+                <div class="eq-header"><h3 class="eq-title">Elite Storage<br>Pod</h3><div class="eq-price">$15<span>/mo</span></div></div>
+                <p class="eq-desc">Climate controlled, biometric access, and 24/7 security.</p>
+                <button class="btn-rent">Rent Now</button>
+            </div>
+        </div>
+        <div class="eq-card">
+            <div class="eq-img-container">
+                <img src="https://images.unsplash.com/photo-1600861194942-f883de0dfe96?q=80&w=2069&auto=format&fit=crop" alt="Workstation">
+                <span class="eq-badge">MEDIA</span>
+            </div>
+            <div class="eq-content">
+                <div class="eq-header"><h3 class="eq-title">VFX<br>Workstation</h3><div class="eq-price">$30<span>/hr</span></div></div>
+                <p class="eq-desc">RTX 4090 equipped studio rig for 3D rendering.</p>
+                <button class="btn-rent">Rent Now</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,95 @@
+@model CampusMart.Models.ViewModels.User.OrderSummaryViewModel
+@{
+    ViewData["Title"] = "Order #" + Model.OrderId.ToString("D5");
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="cart-container">
+    <div class="page-header animate-in">
+        <a asp-controller="Order" asp-action="Index" class="back-btn">←</a>
+        <div><h1 class="page-title">Order #@Model.OrderId.ToString("D5")</h1><p class="page-subtitle">Placed on @Model.CreatedAt.ToString("MMMM dd, yyyy · h:mm tt")</p></div>
+    </div>
+
+    <!-- Order Status Banner -->
+    <div class="order-status-banner animate-in d1">
+        <div class="status-timeline">
+            <div class="timeline-step completed">
+                <div class="timeline-dot">✓</div>
+                <div class="timeline-label">Placed</div>
+            </div>
+            <div class="timeline-line completed"></div>
+            <div class="timeline-step completed">
+                <div class="timeline-dot">✓</div>
+                <div class="timeline-label">Confirmed</div>
+            </div>
+            <div class="timeline-line @(Model.Status == "Completed" ? "completed" : "")"></div>
+            <div class="timeline-step @(Model.Status == "Completed" ? "completed" : "")">
+                <div class="timeline-dot">@(Model.Status == "Completed" ? "✓" : "○")</div>
+                <div class="timeline-label">Completed</div>
+            </div>
+        </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start;">
+        <!-- Items -->
+        <div>
+            <div class="form-section animate-in d2">
+                <div class="form-section-header">
+                    <span class="form-section-icon">📦</span>
+                    <h3 class="form-section-title">Order Items</h3>
+                    <span class="form-section-desc">@Model.ItemCount items</span>
+                </div>
+                @foreach (var item in Model.Items)
+                {
+                    <div class="checkout-item">
+                        <img src="@(item.ImageUrl ?? "https://via.placeholder.com/60")" alt="@item.ProductName" class="checkout-item-img">
+                        <div class="checkout-item-info">
+                            <div class="checkout-item-name">@item.ProductName</div>
+                            <div class="checkout-item-meta">Qty: @item.Quantity × $@item.Price.ToString("F2")</div>
+                        </div>
+                        <div class="checkout-item-price">$@((item.Price * item.Quantity).ToString("F2"))</div>
+                    </div>
+                }
+            </div>
+
+            <div class="form-section animate-in d3">
+                <div class="form-section-header">
+                    <span class="form-section-icon">📍</span>
+                    <h3 class="form-section-title">Delivery Details</h3>
+                </div>
+                <div style="display:flex;gap:40px;">
+                    <div>
+                        <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;font-weight:600;margin-bottom:6px;">Shipping Address</div>
+                        <div style="font-size:14px;color:#fff;">@(Model.ShippingAddress ?? "Not specified")</div>
+                    </div>
+                    <div>
+                        <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;font-weight:600;margin-bottom:6px;">Payment Method</div>
+                        <div style="font-size:14px;color:#fff;">@(Model.PaymentMethod ?? "Cash on Delivery")</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Summary -->
+        <div class="animate-in d3">
+            <div class="form-section" style="position:sticky;top:100px;">
+                <div class="form-section-header">
+                    <span class="form-section-icon">🧾</span>
+                    <h3 class="form-section-title">Payment Summary</h3>
+                </div>
+                <div class="cart-summary-row"><span>Subtotal</span><span>$@Model.TotalAmount.ToString("N0")</span></div>
+                <div class="cart-summary-row"><span>Delivery</span><span style="color:#4ade80;">Free</span></div>
+                <div class="cart-summary-row"><span>Platform Fee</span><span>$0.00</span></div>
+                <div class="cart-summary-row total"><span>Total Paid</span><span>$@Model.TotalAmount.ToString("N0")</span></div>
+
+                <div style="margin-top:20px;padding:16px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:10px;text-align:center;">
+                    <span style="font-size:20px;">✅</span>
+                    <div style="font-size:14px;font-weight:700;color:#4ade80;margin-top:4px;">Payment @Model.Status</div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">@Model.CreatedAt.ToString("MMM dd, yyyy")</div>
+                </div>
+
+                <a asp-controller="HomeUser" asp-action="Index" class="btn-checkout" style="display:block;text-align:center;text-decoration:none;margin-top:16px;background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.1);">Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+</div>

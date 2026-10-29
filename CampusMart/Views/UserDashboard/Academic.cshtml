@@ -1,0 +1,20 @@
+@{
+    ViewData["Title"] = "Academic Resources";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <div class="marketplace-header animate-fade-in">
+        <div class="header-left">
+            <h2 class="section-title">Academic Resources</h2>
+            <p class="header-desc">Access textbooks, notes, and academic materials uploaded by students.</p>
+        </div>
+    </div>
+
+    <div class="cart-empty animate-in d1" style="text-align:center; padding:60px 0; background:#141417; border-radius:12px; border:1px solid var(--border-subtle);">
+        <span class="cart-empty-icon" style="font-size:48px; display:block; margin-bottom:16px;">📖</span>
+        <h3 style="color:#fff; font-size:20px; font-weight:700;">Academic section coming soon</h3>
+        <p style="color:var(--text-muted); font-size:14px; margin-bottom:24px;">We're compiling the best academic resources for you.</p>
+        <a asp-controller="HomeUser" asp-action="Index" class="btn-enter" style="display:inline-block; padding:12px 24px; text-decoration:none;">Go Back</a>
+    </div>
+</div>

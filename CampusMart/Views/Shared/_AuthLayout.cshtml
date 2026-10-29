@@ -1,0 +1,48 @@
+@{
+    var isRegister = ViewContext.RouteData.Values["action"]?.ToString() == "Register";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
+</head>
+<body class="auth-body">
+    <a class="skip-link" href="#auth-form">Skip to form</a>
+    <header class="auth-nav">
+        <a asp-controller="Home" asp-action="HomeIndex" class="auth-brand" aria-label="CampusMart home">
+            @await Html.PartialAsync("_BrandMark")
+            <span>CampusMart<span class="brand-period">.</span></span>
+        </a>
+        <a asp-controller="Home" asp-action="HomeIndex" class="back-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m10 6-6 6 6 6M4 12h16" /></svg>
+            Back to marketplace
+        </a>
+    </header>
+    <main class="auth-shell @(isRegister ? "auth-shell--register" : "")">
+        <aside class="auth-story" aria-label="About CampusMart">
+            <div class="story-heading">Your campus.<br />Your marketplace.</div>
+            <p>Good finds, everyday essentials, and student-run stalls. Right where you belong.</p>
+            <div class="story-art" aria-hidden="true">
+                <svg viewBox="0 0 320 170" fill="none">
+                    <path d="M48 141h224M68 136V56h184v80M57 56 78 16h164l21 40H57Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M57 56a20.6 20.6 0 0 0 41.2 0 20.6 20.6 0 0 0 41.2 0 20.6 20.6 0 0 0 41.2 0 20.6 20.6 0 0 0 41.2 0 20.6 20.6 0 0 0 41.2 0M98 56l11-40m30 40 4-40m38 40-4-40m45 40-11-40M146 136V93h28v43M88 96h36v23H88zm108 0h36v23h-36z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="story-footer"><span>Buy. Sell. Stay local.</span><span>Made for campus life.</span></div>
+        </aside>
+        <section class="auth-form-panel" id="auth-form" aria-labelledby="auth-title">
+            <div class="auth-card">@RenderBody()</div>
+        </section>
+    </main>
+    <footer class="auth-footer"><span>CampusMart</span><span>A little closer to everything you need.</span></footer>
+    <div class="auth-toast" id="authToast" role="status" aria-live="polite"
+         data-success="@TempData["SuccessMessage"]" data-error="@TempData["ErrorMessage"]"></div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script src="~/js/auth.js" asp-append-version="true"></script>
+</body>
+</html>

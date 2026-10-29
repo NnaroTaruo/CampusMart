@@ -1,0 +1,51 @@
+@{
+    ViewData["Title"] = "Account Settings";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="profile-page">
+    <div class="page-header animate-in">
+        <a asp-controller="UserDashboard" asp-action="Index" class="back-btn" title="Back to Dashboard">←</a>
+        <div><h1 class="page-title">Account Settings</h1><p class="page-subtitle">Manage your app preferences and security</p></div>
+    </div>
+
+    <div class="form-section animate-in d1">
+        <div class="form-section-header">
+            <span class="form-section-icon">⚙️</span>
+            <h3 class="form-section-title">Preferences</h3>
+        </div>
+        <div class="form-grid">
+            <div class="form-group full-width" style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <label class="form-label" style="margin:0;">Email Notifications</label>
+                    <div style="font-size:12px; color:var(--text-muted);">Receive updates about your orders and campus deals.</div>
+                </div>
+                <input type="checkbox" style="width: 20px; height: 20px;" checked>
+            </div>
+            <div class="form-group full-width" style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <label class="form-label" style="margin:0;">Dark Mode</label>
+                    <div style="font-size:12px; color:var(--text-muted);">CampusMart is built with a premium dark UI by default.</div>
+                </div>
+                <input type="checkbox" style="width: 20px; height: 20px;" checked disabled>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-section animate-in d2">
+        <div class="form-section-header">
+            <span class="form-section-icon">🔒</span>
+            <h3 class="form-section-title">Security</h3>
+        </div>
+        <div class="form-grid">
+            <div class="form-group full-width">
+                <button class="btn-cancel" style="width: 100%; border: 1px solid var(--border-subtle); color: #fff;">Change Password</button>
+            </div>
+            <div class="form-group full-width">
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="btn-remove" style="width: 100%;">Sign Out</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+@model CampusMart.Models.ViewModels.Account.LoginViewModel
+@{
+    ViewData["Title"] = "Sign in | CampusMart";
+    Layout = "_AuthLayout";
+}
+<h1 class="auth-title" id="auth-title">Welcome back.</h1>
+<p class="auth-subtitle">Sign in and pick up where you left off.</p>
+<form asp-action="Login" asp-controller="Account" method="post" class="auth-form">
+    <div asp-validation-summary="ModelOnly" class="validation-summary" role="alert"></div>
+    <div class="form-group">
+        <label asp-for="StudentId">Student ID</label>
+        <input asp-for="StudentId" class="auth-input" placeholder="e.g. 2024-12345" autocomplete="username" required />
+        <span asp-validation-for="StudentId" class="validation-error"></span>
+    </div>
+    <div class="form-group">
+        <div class="label-row"><label asp-for="Password">Password</label><a asp-action="ForgotPassword">Forgot password?</a></div>
+        <div class="password-group">
+            <input asp-for="Password" class="auth-input" placeholder="Enter your password" autocomplete="current-password" required />
+            <button type="button" class="toggle-password" data-password="Password" aria-label="Show password" aria-pressed="false">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="eye-slash" d="m4 4 16 16"/></svg>
+            </button>
+        </div>
+        <span asp-validation-for="Password" class="validation-error"></span>
+    </div>
+    <label class="remember-me"><input asp-for="RememberMe" /> Keep me signed in</label>
+    <button type="submit" class="btn-submit"><span>Sign in</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button>
+    <p class="auth-link">New to CampusMart? <a asp-action="Register">Create an account</a></p>
+</form>

@@ -1,0 +1,49 @@
+@{
+    ViewData["Title"] ??= "Order Management";
+}
+
+<div id="orderManagementSection">
+    <div class="form-header animate-fade-in">
+        <h1 class="form-title">Order Management</h1>
+        <p class="form-subtitle">Monitor transactions and platform sales. Process pending orders or issue refunds.</p>
+    </div>
+
+    <div class="history-list animate-fade-in delay-1">
+        <!-- Sample Order Card 1 -->
+        <div class="history-card">
+            <img src="https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?q=80&w=2000&auto=format&fit=crop" alt="Laptop" class="history-img">
+            <div class="history-details">
+                <h3 class="history-title">Order #9923: MacBook Pro M1 2020</h3>
+                <div class="history-meta">
+                    <span>Date: Sep 05, 2023</span>
+                    <span>Buyer: Sarah J.</span>
+                    <span>Seller: Mark T.</span>
+                </div>
+            </div>
+            <div class="history-price">$800.00</div>
+            <span class="status-badge" style="background: rgba(74, 222, 128, 0.1); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.2);">Completed</span>
+            <div class="history-actions">
+                <button class="btn-small" type="button">View Details</button>
+            </div>
+        </div>
+
+        <!-- Sample Order Card 2 -->
+        <div class="history-card">
+            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2000&auto=format&fit=crop" alt="Headphones" class="history-img">
+            <div class="history-details">
+                <h3 class="history-title">Order #9924: Sony WH-1000XM4 Headphones</h3>
+                <div class="history-meta">
+                    <span>Date: Aug 18, 2023</span>
+                    <span>Buyer: Mark T.</span>
+                    <span>Seller: Alex C.</span>
+                </div>
+            </div>
+            <div class="history-price">$210.00</div>
+            <span class="status-badge" style="background: rgba(255, 215, 0, 0.1); color: #ffd700; border: 1px solid rgba(255, 215, 0, 0.2);">Pending</span>
+            <div class="history-actions">
+                <button class="btn-small" type="button">View Details</button>
+                <button class="btn-small" type="button" style="border-color: #ffd700; color: #ffd700;">Process</button>
+            </div>
+        </div>
+    </div>
+</div>

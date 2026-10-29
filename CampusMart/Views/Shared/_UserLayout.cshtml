@@ -1,0 +1,196 @@
+@using Microsoft.AspNetCore.Identity
+@using CampusMart.Models.Entities
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var appUser = await UserManager.GetUserAsync(User);
+    var userName = appUser?.FullName ?? (User.Identity?.Name ?? "Guest");
+    var avatarUrl = appUser?.AvatarUrl ?? $"https://ui-avatars.com/api/?name={userName}&background=222&color=fff";
+    var studentId = appUser?.StudentId ?? "";
+
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CampusMart</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/user-layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/user-pages.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/user-sell-profile.css" asp-append-version="true" />
+</head>
+<body class="user-body">
+
+    <!-- FULL WIDTH TOP NAVBAR -->
+    <header class="top-navbar" style="display: flex; width: 100%; justify-content: space-between; align-items: center; background: rgba(15,15,17,.9); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border-subtle); position: sticky; top: 0; z-index: 1000;">
+        <div style="display: flex; align-items: center; width: 260px; padding: 0 24px; gap: 12px;">
+            <button id="sidebarToggleBtn" class="icon-btn" style="display: none; font-size: 20px;">☰</button>
+            <a asp-controller="UserDashboard" asp-action="Index" class="sidebar-brand" style="font-size:20px; font-weight:800; color:var(--primary); text-decoration:none; text-transform:uppercase;">CAMPUS ELITE</a>
+        </div>
+        <div class="top-nav-links" style="display: flex; gap: 32px; justify-content: center; flex: 1;">
+            <a asp-controller="UserDashboard" asp-action="Index"
+               class="top-link @(string.Equals(currentController, "UserDashboard", StringComparison.OrdinalIgnoreCase) ? "active" : "")">Shop</a>
+            <a asp-controller="Product" asp-action="Index"
+               class="top-link @(string.Equals(currentController, "Product", StringComparison.OrdinalIgnoreCase) && string.Equals(currentAction, "Index", StringComparison.OrdinalIgnoreCase) ? "active" : "")">Rentals</a>
+            <a asp-controller="Product" asp-action="Sell"
+               class="top-link @(string.Equals(currentController, "Product", StringComparison.OrdinalIgnoreCase) && string.Equals(currentAction, "Sell", StringComparison.OrdinalIgnoreCase) ? "active" : "")">Sell</a>
+        </div>
+        <div class="top-actions" style="display: flex; align-items: center; gap: 20px; padding-right: 40px;">
+            <button href="#" id="notificationToggleBtn" class="icon-btn">🔔</button>
+            <a href="#" id="cartToggleBtn" class="icon-btn" style="text-decoration:none;">🛒</a>
+        </div>
+    </header>
+
+    <div style="display: flex; flex: 1; overflow: hidden;">
+        <!-- SIDEBAR OVERLAY FOR MOBILE -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="mainSidebar" style="height: 100%; border-right: 1px solid var(--border-subtle); display: flex; flex-direction: column;">
+            
+            <div class="user-profile" id="userProfileBtn" style="display: flex; align-items: center; gap: 12px; padding: 24px; cursor: pointer;">
+                <img src="@avatarUrl" alt="@userName" class="user-avatar" id="sidebarAvatar" style="width:36px; height:36px; border-radius:50%; object-fit: cover;">
+                <div class="user-info">
+                    <h3 id="sidebarName" style="font-size:13px; font-weight:700; margin:0; color:var(--primary);">Student Portal</h3>
+                    <p style="font-size:11px; color:var(--text-muted); margin:0;">Elite Member</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a asp-controller="UserDashboard" asp-action="Index"
+                   class="nav-item @(currentController == "UserDashboard" ? "active" : "")">
+                    <span class="nav-icon">🏠</span> Dashboard
+                </a>
+                <a asp-controller="Cart" asp-action="Index"
+                   class="nav-item @(currentController == "Cart" ? "active" : "")">
+                    <span class="nav-icon">🛒</span> Cart
+                </a>
+                <a asp-controller="UserDashboard" asp-action="Saved" class="nav-item @(currentAction == "Saved" ? "active" : "")">
+                    <span class="nav-icon">🔖</span> Saved
+                </a>
+                <a asp-controller="UserDashboard" asp-action="Academic" class="nav-item @(currentAction == "Academic" ? "active" : "")">
+                    <span class="nav-icon">📖</span> Academic
+                </a>
+                <a asp-controller="Order" asp-action="Index"
+                   class="nav-item @(currentController == "Order" ? "active" : "")">
+                    <span class="nav-icon">🕒</span> History
+                </a>
+            </nav>
+
+            <div style="padding: 24px; display: flex; flex-direction: column; gap: 16px; margin-top: auto; border-top: 1px solid var(--border-subtle);">
+                <a asp-controller="Product" asp-action="Sell" style="background: var(--primary); color: #000; border: none; border-radius: 8px; padding: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; width: 100%; text-decoration: none; transition: transform 0.2s ease;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                    <span>⊕</span> Post Listing
+                </a>
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
+                    <a asp-controller="Settings" asp-action="Index" style="color: var(--text-muted); text-decoration: none; font-size: 13px; display: flex; align-items: center; gap: 12px; transition: color 0.2s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">
+                        <span>⚙</span> Settings
+                    </a>
+                    <a href="#" style="color: var(--text-muted); text-decoration: none; font-size: 13px; display: flex; align-items: center; gap: 12px; transition: color 0.2s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">
+                        <span>❓</span> Support
+                    </a>
+                    <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0; padding:0; width: 100%;">
+                        <button type="submit" style="background: transparent; border: none; padding: 0; color: var(--text-muted); text-decoration: none; font-size: 13px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: color 0.2s ease; width: 100%; text-align: left;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--text-muted)'">
+                            <span>🚪</span> Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content" style="flex: 1; overflow-y: auto; background: var(--bg-base);">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- CART SIDEBAR -->
+    <div class="cart-sidebar-wrapper" id="cartSidebar">
+        @await Component.InvokeAsync("CartSidebar")
+    </div>
+
+    <!-- NOTIFICATION SIDEBAR -->
+    <div class="notification-sidebar-wrapper" id="notificationSidebar">
+        <div class="notification-header">
+            <h2>Notifications</h2>
+            <button class="notification-close-btn" id="closeNotificationBtn">&times;</button>
+        </div>
+        <div class="notification-body">
+            <!-- Dummy notifications -->
+            <div style="background:rgba(255,255,255,0.03); padding:16px; border-radius:12px; border-left:4px solid var(--primary);">
+                <h4 style="font-size:14px; color:#fff; margin:0 0 4px 0; font-weight:700;">Order Shipped</h4>
+                <p style="font-size:12px; color:var(--text-muted); margin:0;">Your order #1204 has been shipped and is on the way.</p>
+                <span style="font-size:10px; color:var(--primary); margin-top:8px; display:block;">2 hours ago</span>
+            </div>
+            <div style="background:rgba(255,255,255,0.03); padding:16px; border-radius:12px; border-left:4px solid transparent;">
+                <h4 style="font-size:14px; color:#fff; margin:0 0 4px 0; font-weight:700;">Price Drop Alert</h4>
+                <p style="font-size:12px; color:var(--text-muted); margin:0;">An item in your saved list has dropped in price.</p>
+                <span style="font-size:10px; color:var(--primary); margin-top:8px; display:block;">Yesterday</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROFILE EDIT MODAL -->
+    <div class="modal-overlay" id="profileModal">
+        <div class="profile-modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Edit Profile</h2>
+                <button class="close-modal" id="closeProfileModal">&times;</button>
+            </div>
+            <form id="quickEditForm" enctype="multipart/form-data">
+                <div class="profile-pic-edit">
+                    <img src="@avatarUrl" alt="Profile" class="profile-pic-preview" id="modalPicPreview">
+                    <button type="button" class="btn-outline" onclick="document.getElementById('profilePicInput').click()">Change Picture</button>
+                    <input type="file" id="profilePicInput" accept="image/*" style="display:none;">
+                </div>
+                <div class="modal-form-group">
+                    <label class="modal-label">Full Name</label>
+                    <input type="text" class="modal-input" id="profileNameInput" value="@userName" required>
+                </div>
+                <div class="modal-form-group">
+                    <label class="modal-label">Student ID</label>
+                    <input type="text" class="modal-input" value="@studentId" readonly style="background: rgba(255,255,255,0.05); color: var(--text-muted);">
+                </div>
+                <div style="display:flex;gap:12px;margin-top:16px;">
+                    <button type="submit" class="btn-save" id="saveProfileBtn" style="flex:1;">Save Changes</button>
+                    <a asp-controller="Profile" asp-action="Index" class="btn-outline" style="display:flex;align-items:center;padding:14px 20px;text-decoration:none;font-size:13px;">Full Edit</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="~/js/user.js" asp-append-version="true"></script>
+    <script>
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+            document.addEventListener("DOMContentLoaded", function() {
+                showToast('@Html.Raw(TempData["SuccessMessage"])', false);
+            });
+            </text>
+        }
+        @if (TempData["OpenCart"] != null && (bool)TempData["OpenCart"])
+        {
+            <text>
+            document.addEventListener("DOMContentLoaded", function() {
+                const cartSidebar = document.getElementById('cartSidebar');
+                const sidebarOverlay = document.getElementById('sidebarOverlay');
+                if (cartSidebar && sidebarOverlay) {
+                    cartSidebar.classList.add('open');
+                    sidebarOverlay.classList.add('active');
+                }
+            });
+            </text>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+            document.addEventListener("DOMContentLoaded", function() {
+                showToast('@Html.Raw(TempData["ErrorMessage"])', true);
+            });
+            </text>
+        }
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

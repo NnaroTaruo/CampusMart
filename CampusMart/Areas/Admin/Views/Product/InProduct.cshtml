@@ -1,0 +1,51 @@
+@{
+    ViewData["Title"] ??= "Product Management";
+}
+
+<!-- ALL LISTINGS SECTION -->
+<div id="allListingsSection">
+    <div class="form-header animate-fade-in">
+        <h1 class="form-title">Product Management</h1>
+        <p class="form-subtitle">Manage all listings on the platform. Review, suspend, or delete items.</p>
+    </div>
+
+    <div class="history-list animate-fade-in delay-1">
+        <!-- Sample Product Card 1 -->
+        <div class="history-card">
+            <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=2000&auto=format&fit=crop" alt="Book" class="history-img">
+            <div class="history-details">
+                <h3 class="history-title">Calculus Early Transcendentals 9th Ed</h3>
+                <div class="history-meta">
+                    <span>Seller ID: 21984422</span>
+                    <span>Listed: Oct 12, 2023</span>
+                </div>
+            </div>
+            <div class="history-price">$85.00</div>
+            <span class="status-badge" style="background: rgba(74, 222, 128, 0.1); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.2);">Active</span>
+            <div class="history-actions">
+                <button class="btn-small" type="button">View</button>
+                <button class="btn-small" type="button" style="border-color: rgba(245, 158, 11, 0.5); color: #f59e0b;">Suspend</button>
+                <button class="btn-small danger" type="button">Delete</button>
+            </div>
+        </div>
+
+        <!-- Sample Product Card 2 -->
+        <div class="history-card">
+            <img src="https://images.unsplash.com/photo-1517336714739-489689fd1ca8?q=80&w=2000&auto=format&fit=crop" alt="Tablet" class="history-img">
+            <div class="history-details">
+                <h3 class="history-title">iPad Air 5 with Apple Pencil</h3>
+                <div class="history-meta">
+                    <span>Seller ID: 88392011</span>
+                    <span>Listed: Nov 01, 2023</span>
+                </div>
+            </div>
+            <div class="history-price">$540.00</div>
+            <span class="status-badge" style="background: rgba(74, 222, 128, 0.1); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.2);">Active</span>
+            <div class="history-actions">
+                <button class="btn-small" type="button">View</button>
+                <button class="btn-small" type="button" style="border-color: rgba(245, 158, 11, 0.5); color: #f59e0b;">Suspend</button>
+                <button class="btn-small danger" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>

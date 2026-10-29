@@ -1,0 +1,117 @@
+@model CampusMart.Models.ViewModels.User.ProductDetailViewModel
+@{
+    ViewData["Title"] = Model.Name;
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <div class="page-header animate-in">
+        <a asp-controller="HomeUser" asp-action="Index" class="back-btn">←</a>
+        <div><h1 class="page-title">Product Details</h1><p class="page-subtitle">@Model.CategoryName</p></div>
+    </div>
+
+    <div class="product-detail animate-in d1">
+        <div class="product-detail-grid">
+            <!-- Image Gallery -->
+            <div class="product-gallery">
+                <div class="product-main-img">
+                    <img src="@(Model.ImageUrl ?? "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=800&auto=format&fit=crop")" alt="@Model.Name" id="mainProductImage">
+                    <span class="product-category-tag">@Model.CategoryName</span>
+                </div>
+            </div>
+
+            <!-- Product Info -->
+            <div class="product-info-panel">
+                <div class="product-info-header">
+                    <h1 class="product-detail-name">@Model.Name</h1>
+                    <div class="product-detail-price">$@Model.Price.ToString("F2")</div>
+                </div>
+
+                <div class="product-meta-row">
+                    <div class="product-meta-item">
+                        <span class="product-meta-icon">📦</span>
+                        <div>
+                            <div class="product-meta-label">Stock</div>
+                            <div class="product-meta-value">@Model.Stock available</div>
+                        </div>
+                    </div>
+                    <div class="product-meta-item">
+                        <span class="product-meta-icon">🏷️</span>
+                        <div>
+                            <div class="product-meta-label">Category</div>
+                            <div class="product-meta-value">@Model.CategoryName</div>
+                        </div>
+                    </div>
+                    <div class="product-meta-item">
+                        <span class="product-meta-icon">⭐</span>
+                        <div>
+                            <div class="product-meta-label">Rating</div>
+                            <div class="product-meta-value">4.8 (24 reviews)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-description">
+                    <h3 style="font-size:14px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;">Description</h3>
+                    <p>@(Model.Description ?? "No description available for this product.")</p>
+                </div>
+
+                <div class="product-actions">
+                    <form asp-controller="Cart" asp-action="AddToCart" method="post" style="display:flex;gap:12px;width:100%;">
+                        <input type="hidden" name="productId" value="@Model.Id" />
+                        <div class="product-qty-selector">
+                            <button type="button" class="qty-btn" onclick="changeQty(-1)">−</button>
+                            <input type="number" name="quantity" value="1" min="1" max="@Model.Stock" class="qty-input" id="qtyInput" readonly>
+                            <button type="button" class="qty-btn" onclick="changeQty(1)">+</button>
+                        </div>
+                        <button type="submit" class="btn-add-cart">
+                            🛒 Add to Cart
+                        </button>
+                    </form>
+                </div>
+
+                <div class="product-guarantees">
+                    <div class="guarantee-item"><span>🔒</span> Secure Transaction</div>
+                    <div class="guarantee-item"><span>🔄</span> Easy Returns</div>
+                    <div class="guarantee-item"><span>🚚</span> Campus Delivery</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.RelatedProducts.Any())
+    {
+        <div class="animate-in d3" style="margin-top:40px;">
+            <div class="section-header">
+                <h2 class="section-title">Related Products</h2>
+                <a asp-controller="HomeUser" asp-action="Index" class="view-all">VIEW ALL</a>
+            </div>
+            <div class="related-grid">
+                @foreach (var rp in Model.RelatedProducts)
+                {
+                    <a asp-controller="Product" asp-action="Details" asp-route-id="@rp.Id" class="related-card" style="text-decoration:none;">
+                        <div class="related-img">
+                            <img src="@(rp.ImageUrl ?? "https://via.placeholder.com/200")" alt="@rp.Name">
+                        </div>
+                        <div class="related-info">
+                            <div class="related-name">@rp.Name</div>
+                            <div class="related-price">$@rp.Price.ToString("F2")</div>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+<script>
+    function changeQty(delta) {
+        const input = document.getElementById('qtyInput');
+        let val = parseInt(input.value) + delta;
+        if (val < 1) val = 1;
+        if (val > @Model.Stock) val = @Model.Stock;
+        input.value = val;
+    }
+</script>
+}

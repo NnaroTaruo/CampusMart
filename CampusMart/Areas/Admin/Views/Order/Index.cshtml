@@ -1,0 +1,23 @@
+@{
+    ViewData["Title"] = "Store Oversight";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="section-title">Store Oversight</h2>
+<div class="panel">
+    <h3 class="panel-title">Compliance Checks</h3>
+    <ul class="mini-list">
+        <li>2 stalls missing permit renewals this month.</li>
+        <li>1 stall flagged for delayed order handling.</li>
+        <li>All payment gateway logs synced successfully.</li>
+    </ul>
+    <div class="inline-actions">
+        <button class="btn" id="refreshOversightBtn">Refresh Oversight Data</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById("refreshOversightBtn")?.addEventListener("click", () => alert("Oversight metrics refreshed (sample)."));
+    </script>
+}

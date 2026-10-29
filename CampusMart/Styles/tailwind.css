@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Segoe UI', Inter, ui-sans-serif, system-ui, sans-serif;
+  }
+
+  body {
+    background: #111827;
+    color: #e5e7eb;
+    line-height: 1.5;
+  }
+}
+
+@layer components {
+  .cm-container {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .cm-surface {
+    @apply rounded-lg border border-slate-700/80 bg-slate-800/60;
+  }
+
+  .cm-button-primary {
+    @apply inline-flex items-center justify-center rounded-md bg-campus-blue px-5 py-3 font-semibold text-slate-900 transition hover:bg-campus-blue-dark focus:outline-none focus:ring-2 focus:ring-campus-blue focus:ring-offset-2 focus:ring-offset-campus-ink;
+  }
+
+  .cm-button-secondary {
+    @apply inline-flex items-center justify-center rounded-md border border-slate-600 bg-transparent px-5 py-3 font-semibold text-slate-100 transition hover:border-slate-400 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-400;
+  }
+
+  .cm-eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.16em] text-campus-blue;
+  }
+
+  .cm-page-title {
+    @apply text-3xl font-bold tracking-tight text-slate-50 sm:text-4xl;
+  }
+
+  .cm-page-lead {
+    @apply max-w-2xl text-base text-campus-muted sm:text-lg;
+  }
+}

@@ -1,0 +1,156 @@
+@model IEnumerable<CampusMart.Models.Entities.ApplicationUser>
+@{
+    ViewData["Title"] = "Student Directory";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+    <div>
+        <h2 class="section-title" style="margin-top:0;">Student Directory</h2>
+        <div class="section-subtitle">Manage registered student accounts.</div>
+    </div>
+    <button class="btn" style="background: var(--primary); color: #111; height: fit-content;" onclick="openAddStudentModal()">+ Add Student</button>
+</div>
+
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>Avatar</th>
+                <th>Name</th>
+                <th>Student ID</th>
+                <th>Email</th>
+                <th>Date Joined</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(user.AvatarUrl))
+                        {
+                            <img src="@user.AvatarUrl" alt="Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-subtle);" />
+                        }
+                        else
+                        {
+                            var initial = string.IsNullOrEmpty(user.FullName) ? "U" : user.FullName.Substring(0, 1).ToUpper();
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: #222; display: flex; align-items: center; justify-content: center; font-weight: 800; border: 2px solid var(--border-subtle);">
+                                @initial
+                            </div>
+                        }
+                    </td>
+                    <td><div style="font-weight: 700;">@user.FullName</div></td>
+                    <td>@user.StudentId</td>
+                    <td>@user.Email</td>
+                    <td>@user.DateTime.ToString("MMM dd, yyyy")</td>
+                    <td>
+                        <button class="btn" style="background: rgba(255,255,255,0.1); color: #fff; padding: 6px 12px; margin-right: 8px;" onclick="viewStudentDetails('@user.Id')">View</button>
+                        <button class="btn" style="background: rgba(121,231,163,0.12); color: #79e7a3; border: 1px solid rgba(121,231,163,0.3); padding: 6px 12px; margin-right: 8px;" onclick="openEditStudentModal('@user.Id')">Edit</button>
+                        <button class="btn warn" style="padding: 6px 12px;" onclick="deleteStudent('@user.Id', '@user.FullName')">Delete</button>
+                    </td>
+                </tr>
+            }
+            @if(!Model.Any())
+            {
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 24px;">No students registered yet.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- ADD STUDENT MODAL -->
+<div class="modal-overlay" id="addStudentModal" style="display:none;">
+    <div class="profile-modal" style="width:500px; max-height: 90vh; overflow-y: auto;">
+        <div class="modal-header">
+            <h2 class="modal-title">Create Student Account</h2>
+            <button class="close-modal" onclick="closeModal('addStudentModal')">&times;</button>
+        </div>
+        <form id="addStudentForm" enctype="multipart/form-data">
+            <div style="display:flex; gap:12px;">
+                <div class="modal-form-group" style="flex:1;">
+                    <label class="modal-label" for="newFirstName">First Name *</label>
+                    <input type="text" class="modal-input" id="newFirstName" required>
+                </div>
+                <div class="modal-form-group" style="flex:1;">
+                    <label class="modal-label" for="newLastName">Last Name *</label>
+                    <input type="text" class="modal-input" id="newLastName" required>
+                </div>
+            </div>
+            <div class="modal-form-group">
+                <label class="modal-label" for="newStudentId">Student ID *</label>
+                <input type="text" class="modal-input" id="newStudentId" required>
+            </div>
+            <div class="modal-form-group">
+                <label class="modal-label" for="newEmail">Email Address *</label>
+                <input type="email" class="modal-input" id="newEmail" required>
+            </div>
+            <div class="modal-form-group">
+                <label class="modal-label" for="newAvatar">Profile Picture (Optional)</label>
+                <input type="file" class="modal-input" id="newAvatar" accept="image/*" style="padding: 8px;">
+                <div id="newAvatarPreview" style="margin-top:8px;"></div>
+            </div>
+            <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
+                <strong>Note:</strong> The default password will be set to <code style="background: rgba(255,255,255,0.1); padding: 2px 4px; border-radius: 4px;">CampusMart123!</code>. The student should log in and change it.
+            </div>
+            <button type="submit" class="btn-save" style="width:100%; margin-top: 16px;" id="saveStudentBtn">Create Account</button>
+        </form>
+    </div>
+</div>
+
+<!-- VIEW STUDENT MODAL -->
+<div class="modal-overlay" id="viewStudentModal" style="display:none;">
+    <div class="profile-modal" style="width:450px;">
+        <div class="modal-header">
+            <h2 class="modal-title">Student Profile</h2>
+            <button class="close-modal" onclick="closeModal('viewStudentModal')">&times;</button>
+        </div>
+        <div id="studentDetailContent" style="display: flex; flex-direction: column; gap: 16px; align-items: center; text-align: center;">
+            <!-- Rendered via JS -->
+        </div>
+    </div>
+</div>
+
+<!-- EDIT STUDENT MODAL -->
+<div class="modal-overlay" id="editStudentModal" style="display:none;">
+    <div class="profile-modal" style="width:500px; max-height: 90vh; overflow-y: auto;">
+        <div class="modal-header">
+            <h2 class="modal-title">Edit Student Account</h2>
+            <button class="close-modal" onclick="closeModal('editStudentModal')">&times;</button>
+        </div>
+        <form id="editStudentForm" enctype="multipart/form-data">
+            <input type="hidden" id="editStudentIdHidden" />
+            <div style="display:flex; gap:12px;">
+                <div class="modal-form-group" style="flex:1;">
+                    <label class="modal-label" for="editFirstName">First Name *</label>
+                    <input type="text" class="modal-input" id="editFirstName" required>
+                </div>
+                <div class="modal-form-group" style="flex:1;">
+                    <label class="modal-label" for="editLastName">Last Name *</label>
+                    <input type="text" class="modal-input" id="editLastName" required>
+                </div>
+            </div>
+            <div class="modal-form-group">
+                <label class="modal-label" for="editStudentId">Student ID *</label>
+                <input type="text" class="modal-input" id="editStudentId" required>
+            </div>
+            <div class="modal-form-group">
+                <label class="modal-label" for="editEmail">Email Address *</label>
+                <input type="email" class="modal-input" id="editEmail" required>
+            </div>
+            <div class="modal-form-group">
+                <label class="modal-label" for="editAvatar">Update Profile Picture</label>
+                <input type="file" class="modal-input" id="editAvatar" accept="image/*" style="padding: 8px;">
+                <div id="editAvatarPreview" style="margin-top:8px;"></div>
+            </div>
+            <button type="submit" class="btn-save" style="width:100%; margin-top: 16px;" id="updateStudentBtn">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/user-management.js" asp-append-version="true"></script>
+}

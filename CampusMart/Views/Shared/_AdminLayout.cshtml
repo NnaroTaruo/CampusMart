@@ -1,0 +1,84 @@
+@using Microsoft.AspNetCore.Identity
+@using CampusMart.Models.Entities
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var appUser = await UserManager.GetUserAsync(User);
+    var adminDisplayName = appUser?.FullName ?? (User.Identity?.Name ?? "Admin");
+    var avatarUrl = appUser?.AvatarUrl;
+    var adminId = appUser?.StudentId ?? (User.Identity?.Name ?? "Admin");
+    ViewData["Title"] ??= "Admin";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>@ViewData["Title"] - CampusMart</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+<body class="admin-body">
+    <a class="skip-link" href="#adminContent">Skip to content</a>
+    @await Html.PartialAsync("_AdminSidebar")
+    <button class="sidebar-scrim" id="sidebarScrim" type="button" aria-label="Close navigation" tabindex="-1"></button>
+    <main class="admin-main">
+        <header class="topbar">
+            <div class="topbar-title">
+                <button class="icon-btn menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-controls="adminSidebar" aria-expanded="false">@await Html.PartialAsync("_AdminIcon", "menu")</button>
+                <span class="topbar-scope">Workspace<span>/</span></span><h1 id="pageTitle">@ViewData["Title"]</h1>
+            </div>
+            <div class="top-tools">
+                <label class="admin-search" for="adminSearch">
+                    @await Html.PartialAsync("_AdminIcon", "search")
+                    <input class="search" id="adminSearch" type="search" placeholder="Search this page" autocomplete="off" />
+                </label>
+                <a asp-area="Admin" asp-controller="Notification" asp-action="Index" class="icon-btn" aria-label="Notifications">@await Html.PartialAsync("_AdminIcon", "bell")</a>
+                <button class="icon-btn profile-trigger top-profile" id="topProfileBtn" type="button" aria-label="Edit your profile">@adminDisplayName.Substring(0, 1).ToUpperInvariant()</button>
+            </div>
+        </header>
+        <div class="content-wrap" id="adminContent" tabindex="-1">
+            <p id="adminSearchStatus" class="visually-hidden" role="status"></p>
+            <p id="adminSearchEmpty" class="search-empty" hidden>No matches. Try a different name or clear your search.</p>
+            @RenderBody()
+        </div>
+    </main>
+    <div class="modal-overlay" id="profileModal">
+        <div class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle" tabindex="-1">
+            <div class="modal-header">
+                <h2 class="modal-title" id="profileModalTitle">Edit profile</h2>
+                <button class="close-modal" id="closeProfileModal" type="button" aria-label="Close profile editor">&times;</button>
+            </div>
+            <form id="adminQuickEditForm" enctype="multipart/form-data">
+                <div class="profile-pic-edit">
+                    @if (!string.IsNullOrEmpty(avatarUrl))
+                    {
+                        <img src="@avatarUrl" alt="Profile" class="profile-pic-preview" id="modalPicPreview" />
+                    }
+                    else
+                    {
+                        <img src="~/images/avatar-placeholder.svg" alt="Profile preview" class="profile-pic-preview" id="modalPicPreview" />
+                    }
+                    <button class="btn-outline" type="button" id="changeProfilePicBtn">Change picture</button>
+                    <input type="file" id="profilePicInput" name="avatarFile" hidden accept="image/*" />
+                </div>
+                <div class="modal-form-group">
+                    <label class="modal-label" for="profileNameInput">Full name</label>
+                    <input type="text" class="modal-input" id="profileNameInput" name="fullName" value="@adminDisplayName" required />
+                </div>
+                <div class="modal-form-group">
+                    <label class="modal-label" for="profileIdInput">ID number</label>
+                    <input type="text" class="modal-input" id="profileIdInput" value="@adminId" readonly />
+                </div>
+                <div class="modal-form-group">
+                    <label class="modal-label" for="profileCourseInput">Role</label>
+                    <input type="text" class="modal-input" id="profileCourseInput" value="Administrator" readonly />
+                </div>
+                <button class="btn-save" id="saveProfileBtn" type="submit">Save changes</button>
+            </form>
+        </div>
+    </div>
+    <script src="~/js/admin-dashboard.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

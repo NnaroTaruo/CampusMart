@@ -1,0 +1,69 @@
+@model CampusMart.Models.ViewModels.Account.RegisterViewModel
+@{
+    ViewData["Title"] = "Create an account | CampusMart";
+    Layout = "_AuthLayout";
+}
+<h1 class="auth-title" id="auth-title">Make yourself at home.</h1>
+<p class="auth-subtitle">Create an account to join your campus marketplace.</p>
+<form asp-action="Register" asp-controller="Account" method="post" class="auth-form">
+    <div asp-validation-summary="ModelOnly" class="validation-summary" role="alert"></div>
+    <div class="form-row">
+        <div class="form-group">
+            <label asp-for="FirstName">First name</label>
+            <input asp-for="FirstName" class="auth-input" placeholder="Juan" autocomplete="given-name" required />
+            <span asp-validation-for="FirstName" class="validation-error"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="LastName">Last name</label>
+            <input asp-for="LastName" class="auth-input" placeholder="Dela Cruz" autocomplete="family-name" required />
+            <span asp-validation-for="LastName" class="validation-error"></span>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label asp-for="StudentId">Student ID</label>
+            <input asp-for="StudentId" class="auth-input" placeholder="2024-12345" autocomplete="username" aria-describedby="studentIdHelp" required />
+            <span class="help-text" id="studentIdHelp">Your university-issued ID number.</span>
+            <span asp-validation-for="StudentId" class="validation-error"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Email">Email address</label>
+            <input asp-for="Email" type="email" class="auth-input" placeholder="juan@university.edu.ph" autocomplete="email" required />
+            <span asp-validation-for="Email" class="validation-error"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Department">Department / College</label>
+        <select asp-for="Department" class="auth-input" required>
+            <option value="" disabled>Select your department</option>
+            <option>College of Information Technology</option>
+            <option>College of Engineering</option>
+            <option>College of Business</option>
+            <option>College of Education</option>
+            <option>College of Arts &amp; Sciences</option>
+            <option>College of Nursing</option>
+            <option>Graduate School</option>
+        </select>
+        <span asp-validation-for="Department" class="validation-error"></span>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label asp-for="Password">Password</label>
+            <div class="password-group">
+                <input asp-for="Password" class="auth-input" placeholder="At least 6 characters" minlength="6" autocomplete="new-password" required />
+                <button type="button" class="toggle-password" data-password="Password" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="eye-slash" d="m4 4 16 16"/></svg></button>
+            </div>
+            <span asp-validation-for="Password" class="validation-error"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="ConfirmPassword">Confirm password</label>
+            <div class="password-group">
+                <input asp-for="ConfirmPassword" class="auth-input" placeholder="Re-enter password" autocomplete="new-password" required />
+                <button type="button" class="toggle-password" data-password="ConfirmPassword" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="eye-slash" d="m4 4 16 16"/></svg></button>
+            </div>
+            <span asp-validation-for="ConfirmPassword" class="validation-error"></span>
+        </div>
+    </div>
+    <button type="submit" class="btn-submit"><span>Create account</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button>
+    <p class="auth-link">Already part of CampusMart? <a asp-action="Login">Sign in</a></p>
+</form>

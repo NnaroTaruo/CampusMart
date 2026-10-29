@@ -1,0 +1,123 @@
+@model CampusMart.Models.ViewModels.User.CheckoutViewModel
+@{
+    ViewData["Title"] = "Checkout";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="cart-container">
+    <div class="page-header animate-in">
+        <a asp-controller="Cart" asp-action="Index" class="back-btn">←</a>
+        <div><h1 class="page-title">Checkout</h1><p class="page-subtitle">Review your order and confirm payment</p></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start;">
+        <!-- Left: Order Items + Shipping -->
+        <div>
+            <div class="form-section animate-in d1">
+                <div class="form-section-header">
+                    <span class="form-section-icon">📦</span>
+                    <h3 class="form-section-title">Order Summary</h3>
+                    <span class="form-section-desc">@Model.ItemCount items</span>
+                </div>
+                @foreach (var item in Model.Items)
+                {
+                    <div class="checkout-item">
+                        <img src="@(item.ImageUrl ?? "https://via.placeholder.com/60")" alt="@item.ProductName" class="checkout-item-img">
+                        <div class="checkout-item-info">
+                            <div class="checkout-item-name">@item.ProductName</div>
+                            <div class="checkout-item-meta">@item.CategoryName · Qty: @item.Quantity</div>
+                        </div>
+                        <div class="checkout-item-price">$@((item.Price * item.Quantity).ToString("F2"))</div>
+                    </div>
+                }
+            </div>
+
+            <form asp-controller="Order" asp-action="PlaceOrder" method="post" id="checkoutForm">
+                <div class="form-section animate-in d2">
+                    <div class="form-section-header">
+                        <span class="form-section-icon">📍</span>
+                        <h3 class="form-section-title">Delivery Information</h3>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label class="form-label">Delivery Address</label>
+                            <input type="text" class="form-input" name="ShippingAddress" value="@Model.ShippingAddress" placeholder="e.g. Room 301, Engineering Building" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section animate-in d3">
+                    <div class="form-section-header">
+                        <span class="form-section-icon">💳</span>
+                        <h3 class="form-section-title">Payment Method</h3>
+                    </div>
+                    <div class="payment-options">
+                        <label class="payment-option active">
+                            <input type="radio" name="PaymentMethod" value="Cash on Delivery" checked>
+                            <div class="payment-option-content">
+                                <span class="payment-icon">💵</span>
+                                <div>
+                                    <div class="payment-name">Cash on Delivery</div>
+                                    <div class="payment-desc">Pay when you receive your items</div>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="PaymentMethod" value="GCash">
+                            <div class="payment-option-content">
+                                <span class="payment-icon">📱</span>
+                                <div>
+                                    <div class="payment-name">GCash</div>
+                                    <div class="payment-desc">Pay via GCash mobile wallet</div>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="PaymentMethod" value="Bank Transfer">
+                            <div class="payment-option-content">
+                                <span class="payment-icon">🏦</span>
+                                <div>
+                                    <div class="payment-name">Bank Transfer</div>
+                                    <div class="payment-desc">Direct transfer from your bank account</div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-section animate-in d4">
+                    <div class="form-section-header">
+                        <span class="form-section-icon">📝</span>
+                        <h3 class="form-section-title">Order Notes</h3>
+                    </div>
+                    <textarea class="form-textarea" name="Notes" placeholder="Any special instructions for delivery..." style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);padding:13px 16px;border-radius:10px;color:#fff;font-family:inherit;width:100%;min-height:80px;resize:vertical;box-sizing:border-box;"></textarea>
+                </div>
+            </form>
+        </div>
+
+        <!-- Right: Price Summary -->
+        <div class="checkout-sidebar animate-in d2">
+            <div class="form-section" style="position:sticky;top:100px;">
+                <div class="form-section-header">
+                    <span class="form-section-icon">🧾</span>
+                    <h3 class="form-section-title">Price Details</h3>
+                </div>
+                <div class="cart-summary-row"><span>Subtotal (@Model.ItemCount items)</span><span>$@Model.Subtotal.ToString("F2")</span></div>
+                <div class="cart-summary-row"><span>Delivery Fee</span><span style="color:#4ade80;">Free</span></div>
+                <div class="cart-summary-row"><span>Platform Fee</span><span>$0.00</span></div>
+                <div class="cart-summary-row total"><span>Total</span><span>$@Model.Subtotal.ToString("F2")</span></div>
+
+                <button type="submit" form="checkoutForm" class="btn-checkout" style="margin-top:20px;">
+                    Place Order — $@Model.Subtotal.ToString("F2")
+                </button>
+
+                <div style="text-align:center;margin-top:16px;">
+                    <p style="font-size:11px;color:var(--text-muted);line-height:1.5;">
+                        🔒 Your payment is secured and encrypted.<br>
+                        By placing your order, you agree to our Terms of Service.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

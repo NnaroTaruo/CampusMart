@@ -1,0 +1,146 @@
+
+@{
+    ViewData["Title"] = "HomeIndex";
+}
+
+
+<section class="border-b border-white/10 py-14 md:py-20">
+    <div class="cm-container">
+        <div class="grid items-center gap-10 lg:grid-cols-2">
+
+            <!-- Left: Copy -->
+            <div>
+
+                <div class="cm-eyebrow mb-4">
+                    For students and faculty
+                </div>
+
+                <h1 class="max-w-xl text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
+                    Shop what you need on campus.
+                </h1>
+
+                <p class="mt-5 max-w-xl text-lg text-campus-muted">
+                    Find meals, uniforms, supplies, and more from campus sellers. Browse online and pick up on campus.
+                </p>
+
+                <div class="mt-7 flex flex-wrap gap-3">
+                    <a asp-area=""
+                       asp-controller="Store"
+                       asp-action="Index"
+                       class="cm-button-primary">Browse the store</a>
+                    <a asp-area=""
+                       asp-controller="Account"
+                       asp-action="Register"
+                       class="cm-button-secondary">Create an account</a>
+                </div>
+
+                <div class="mt-8 grid max-w-lg grid-cols-3 gap-4 border-t border-white/10 pt-5">
+                    <div><strong class="block text-xl text-slate-50">500+</strong><span class="text-xs text-campus-muted">Products</span></div>
+                    <div><strong class="block text-xl text-slate-50">80+</strong><span class="text-xs text-campus-muted">Sellers</span></div>
+                    <div><strong class="block text-xl text-slate-50">3.2k+</strong><span class="text-xs text-campus-muted">Orders</span></div>
+                </div>
+            </div>
+
+            <!-- Right: Mart.gif -->
+            <div class="hidden justify-center lg:flex">
+                <img src="~/images/Mart.gif"
+                     alt="CampusMart"
+                     class="h-auto max-h-80 w-auto" />
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+
+<div class="border-b border-white/10 py-6">
+    <div class="cm-container">
+        <div class="grid gap-4 text-sm text-campus-muted sm:grid-cols-2 lg:grid-cols-4">
+            <div><strong class="text-white">Fast pickup</strong><br />Ready in 15 minutes</div>
+            <div><strong class="text-white">Secure shopping</strong><br />For verified students</div>
+            <div><strong class="text-white">Flexible payment</strong><br />GCash or cash pickup</div>
+            <div><strong class="text-white">Many sellers</strong><br />One campus marketplace</div>
+        </div>
+    </div>
+</div>
+
+
+
+<section class="py-14" id="categories">
+    <div class="cm-container">
+        <div class="mb-8">
+            <div class="cm-eyebrow">Categories</div>
+            <h2 class="mt-2 text-2xl font-extrabold text-white">Start with a category</h2>
+            <p class="mt-2 text-campus-muted">From daily meals to official uniforms, everything is in one place.</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            @{
+                var categories = new[]
+                {
+                    new { Name = "Uniforms", Count = 24 },
+                    new { Name = "Meals",    Count = 38 },
+                    new { Name = "Drinks",   Count = 29 },
+                    new { Name = "Supplies", Count = 65 },
+                    new { Name = "Books",    Count = 47 },
+                    new { Name = "Merch",    Count = 18 },
+                };
+            }
+
+            @foreach (var cat in categories)
+            {
+                <div>
+                    <a asp-area=""
+                       asp-controller="Store"
+                       asp-action="Index"
+                       asp-route-category="@cat.Name"
+                       class="cm-surface block p-4 transition hover:border-campus-blue/60">
+                        <div class="font-semibold text-slate-100">@cat.Name</div>
+                        <div class="mt-1 text-xs text-campus-muted">@cat.Count items</div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+
+
+<section class="border-t border-white/10 py-14">
+    <div class="cm-container">
+        <div class="mb-8">
+            <div class="cm-eyebrow">How it works</div>
+            <h2 class="mt-2 text-2xl font-extrabold text-white">Order in three simple steps</h2>
+        </div>
+
+        <div class="grid gap-4 md:grid-cols-3">
+            <div class="cm-surface p-5">
+                    <div class="mb-4 text-2xl font-bold text-campus-blue">1</div>
+                    <h3 class="font-bold text-white">Browse and add to cart</h3>
+                    <p class="mt-2 text-sm text-campus-muted">
+                        Search or filter by category. Add items from multiple campus
+                        sellers in one session effortlessly.
+                    </p>
+            </div>
+            <div class="cm-surface p-5">
+                    <div class="mb-4 text-2xl font-bold text-campus-blue">2</div>
+                    <h3 class="font-bold text-white">Choose payment</h3>
+                    <p class="mt-2 text-sm text-campus-muted">
+                        Pay via GCash, bank transfer, or cash on pickup. Upload proof
+                        for digital payments instantly.
+                    </p>
+            </div>
+            <div class="cm-surface p-5">
+                    <div class="mb-4 text-2xl font-bold text-campus-blue">3</div>
+                    <h3 class="font-bold text-white">Pick up on campus</h3>
+                    <p class="mt-2 text-sm text-campus-muted">
+                        Get notified when your order is ready. Collect from the
+                        seller's campus location — no waiting.
+                    </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+

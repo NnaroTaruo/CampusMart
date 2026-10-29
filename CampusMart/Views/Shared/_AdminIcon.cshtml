@@ -1,0 +1,16 @@
+@model string
+@{
+    var path = Model switch {
+        "floors" => "M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z",
+        "listings" => "M8 6h12M8 12h12M8 18h12M3 6h.01M3 12h.01M3 18h.01",
+        "students" => "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M16 3a4 4 0 0 1 0 8M22 21v-2a4 4 0 0 0-3-3.87M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z",
+        "orders" => "M5 7h14v14H5zM8 7V5a4 4 0 0 1 8 0v2M9 12h6M9 16h4",
+        "settings" => "M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2",
+        "logout" => "M9 4H4v16h5M9 12h12m-4-4 4 4-4 4",
+        "bell" => "M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4",
+        "menu" => "M4 6h16M4 12h16M4 18h16",
+        "search" => "M21 21l-5-5M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z",
+        _ => "M9 5l7 7-7 7"
+    };
+}
+<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="@path" /></svg>

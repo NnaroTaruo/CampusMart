@@ -1,0 +1,93 @@
+@model IEnumerable<CampusMart.Models.Entities.Product>
+
+@{
+    ViewData["Title"] = "CampusMart | Store";
+    var categories = ViewBag.Categories as IEnumerable<CampusMart.Models.Entities.Category>;
+    var selectedCategory = ViewBag.SelectedCategory as string;
+}
+
+<div class="py-10 md:py-14">
+    <div class="cm-container">
+        <div class="mb-10 flex flex-col gap-4 border-b border-white/10 pb-8 md:flex-row md:items-end md:justify-between">
+            <div>
+                <p class="cm-eyebrow mb-2">Campus marketplace</p>
+                <h1 class="cm-page-title mb-2">Find what you need</h1>
+                <p class="cm-page-lead">Browse products from campus sellers. Choose a category to narrow your search.</p>
+            </div>
+            <div>
+                <a asp-controller="Account" asp-action="Login" class="cm-button-primary">Sign in to buy</a>
+            </div>
+        </div>
+
+        <div class="grid gap-6 lg:grid-cols-[220px_1fr]">
+            <!-- Categories Sidebar -->
+            <div>
+                <div class="cm-surface p-4 lg:sticky lg:top-24">
+                    <h2 class="mb-3 text-base font-extrabold text-white">Filter by category</h2>
+                    <div class="flex flex-col gap-2">
+                        <a asp-action="Index" asp-route-category="" class="@(string.IsNullOrEmpty(selectedCategory) ? "bg-campus-blue text-slate-900" : "text-campus-muted hover:bg-slate-700 hover:text-white") block rounded-md px-3 py-2 text-left text-sm font-semibold transition">
+                            All Items
+                        </a>
+                        @if (categories != null)
+                        {
+                            foreach (var cat in categories)
+                            {
+                                <a asp-action="Index" asp-route-category="@cat.Name" class="@(selectedCategory == cat.Name ? "bg-campus-blue text-slate-900" : "text-campus-muted hover:bg-slate-700 hover:text-white") block rounded-md px-3 py-2 text-left text-sm font-semibold transition">
+                                    @cat.Name
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div>
+                @if (Model != null && Model.Any())
+                {
+                    <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                        @foreach (var p in Model)
+                        {
+                            <article class="cm-surface flex h-full flex-col overflow-hidden transition hover:border-campus-blue/60">
+                                    <div class="h-48 bg-white/[0.04]">
+                                        @if (!string.IsNullOrEmpty(p.ImageUrl))
+                                        {
+                                            <img src="@p.ImageUrl" alt="@p.Name" class="h-full w-full object-cover" />
+                                        }
+                                        else
+                                        {
+                                            <div class="flex h-full items-center justify-center text-sm text-campus-muted">
+                                                <span>No Image</span>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="flex flex-1 flex-col p-4">
+                                        <div class="mb-2 flex items-start justify-between gap-3">
+                                            <h2 class="mb-0 text-base font-bold text-white">@p.Name</h2>
+                                            <span class="whitespace-nowrap font-bold text-campus-blue">$@p.Price.ToString("F2")</span>
+                                        </div>
+                                        <p class="mb-3 line-clamp-2 flex-1 text-sm text-campus-muted">
+                                            @p.Description
+                                        </p>
+                                        <div class="mb-4 text-xs font-semibold @(p.Stock > 0 ? "text-emerald-400" : "text-red-400")">
+                                            @(p.Stock > 0 ? $"{p.Stock} available" : "Out of stock")
+                                        </div>
+                                        <a asp-controller="Account" asp-action="Login" class="cm-button-secondary w-full">Sign in to buy</a>
+                                    </div>
+                            </article>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="cm-surface p-10 text-center">
+                        <div class="mb-4 text-sm font-semibold uppercase tracking-wide text-campus-blue">No results</div>
+                        <h4 class="font-bold text-slate-50">No products found</h4>
+                        <p class="mt-2 text-campus-muted">There are currently no products available in this category.</p>
+                        <a asp-action="Index" class="cm-button-secondary mt-5">Clear Filters</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

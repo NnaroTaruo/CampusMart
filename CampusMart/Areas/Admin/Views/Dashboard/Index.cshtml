@@ -1,0 +1,170 @@
+@{
+    ViewData["Title"] = "Floor Management";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="metrics">
+    <div class="metric-card">
+        <div class="metric-label">Total Active Stalls</div>
+        <div class="metric-value" id="totalActiveStalls">0</div>
+        <div class="metric-sub" id="totalStallsSub">across all floors</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-label">Total Floors</div>
+        <div class="metric-value" id="totalFloors">0</div>
+        <div class="metric-sub">managed</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-label">Current Floor Occupancy</div>
+        <div class="metric-value" id="currentOccupancy">0%</div>
+        <div class="metric-sub" id="occupancySub">—</div>
+    </div>
+</div>
+
+<div class="floor-panel">
+    <div>
+        <h2 class="section-title" style="margin-top:0;">Select Floor</h2>
+        <div class="floor-buttons" id="floorButtons"></div>
+        <button class="btn" style="margin-top: 12px; background: var(--primary); color: #111;" id="addFloorBtn" onclick="showModal('addFloorModal')">+ Add Floor</button>
+    </div>
+    <div class="capacity">
+        <div id="capacityLabel">Floor Capacity</div>
+        <div><strong id="capacityUsed">0</strong><span id="capacityTotal">/ 0 occupied</span></div>
+        <div class="capacity-bar"><div class="capacity-fill" id="capacityFill"></div></div>
+    </div>
+</div>
+
+<div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap: wrap; gap: 12px;">
+    <div>
+        <h2 class="section-title" id="stallsHeader">Active Stalls</h2>
+        <div class="section-subtitle">Manage current tenants and stall status.</div>
+    </div>
+    <button class="btn" style="background: var(--primary); color: #111; height:fit-content;" id="addStallBtn">+ Create Stall</button>
+</div>
+<div class="stall-grid" id="stallGrid"></div>
+
+<!-- ADD FLOOR MODAL -->
+<div class="modal-overlay" id="addFloorModal" style="display:none;">
+    <div class="profile-modal" style="width:420px;">
+        <div class="modal-header">
+            <h2 class="modal-title">Add New Floor</h2>
+            <button class="close-modal" onclick="closeModal('addFloorModal')">&times;</button>
+        </div>
+        <div class="modal-form-group">
+            <label class="modal-label" for="newFloorName">Floor Name</label>
+            <input type="text" class="modal-input" id="newFloorName" placeholder="e.g. Ground Floor">
+        </div>
+        <div class="modal-form-group">
+            <label class="modal-label" for="newFloorNumber">Floor Number</label>
+            <input type="number" class="modal-input" id="newFloorNumber" placeholder="1" min="1">
+        </div>
+        <div class="modal-form-group">
+            <label class="modal-label" for="newFloorCapacity">Max Stall Capacity</label>
+            <input type="number" class="modal-input" id="newFloorCapacity" value="8" min="1">
+        </div>
+        <button class="btn-save" id="saveFloorBtn" style="width:100%; margin-top: 16px;">Create Floor</button>
+    </div>
+</div>
+
+<!-- CREATE / EDIT STALL MODAL -->
+<div class="modal-overlay" id="stallModal" style="display:none;">
+    <div class="profile-modal" style="width:500px; max-height: 90vh; overflow-y: auto;">
+        <div class="modal-header">
+            <h2 class="modal-title" id="stallModalTitle">Create Stall</h2>
+            <button class="close-modal" onclick="closeModal('stallModal')">&times;</button>
+        </div>
+        <form id="stallForm" enctype="multipart/form-data">
+            <input type="hidden" id="stallEditId" value="">
+            <div class="modal-form-group">
+                <label class="modal-label" for="stallName">Stall Name *</label>
+                <input type="text" class="modal-input" id="stallName" placeholder="e.g. The Tech Hub" required>
+            </div>
+            <div class="modal-form-group">
+                <label class="modal-label" for="stallNumber">Stall Number</label>
+                <input type="text" class="modal-input" id="stallNumber" placeholder="e.g. Stall 101">
+            </div>
+            <div class="modal-form-group">
+                <label class="modal-label" for="stallOwner">Owner Name</label>
+                <input type="text" class="modal-input" id="stallOwner" placeholder="e.g. Alex Mercer">
+            </div>
+            <div class="modal-form-group">
+                <label class="modal-label" for="stallCategory">Category</label>
+                <select class="modal-input" id="stallCategory">
+                    <option value="Food">Food</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Textbooks">Textbooks</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Stationery">Stationery</option>
+                    <option value="Services">Services</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="modal-form-group">
+                <label class="modal-label" for="stallDesc">Description</label>
+                <textarea class="modal-input" id="stallDesc" rows="2" placeholder="Brief description..."></textarea>
+            </div>
+            <div style="display:flex; gap:12px;">
+                <div class="modal-form-group" style="flex:1;">
+                    <label class="modal-label" for="stallOpenTime">Opening Time</label>
+                    <input type="time" class="modal-input" id="stallOpenTime" value="08:00">
+                </div>
+                <div class="modal-form-group" style="flex:1;">
+                    <label class="modal-label" for="stallCloseTime">Closing Time</label>
+                    <input type="time" class="modal-input" id="stallCloseTime" value="20:00">
+                </div>
+            </div>
+            <div class="modal-form-group">
+                <label class="modal-label" for="stallImage">Stall Image</label>
+                <input type="file" class="modal-input" id="stallImage" accept="image/*" style="padding: 8px;">
+                <div id="stallImagePreview" style="margin-top:8px;"></div>
+            </div>
+            <button type="submit" class="btn-save" style="width:100%; margin-top: 16px;" id="saveStallBtn">Create Stall</button>
+        </form>
+    </div>
+</div>
+
+<!-- STALL DETAIL / ITEMS MODAL -->
+<div class="modal-overlay" id="stallDetailModal" style="display:none;">
+    <div class="profile-modal" style="width:600px; max-height: 90vh; overflow-y: auto;">
+        <div class="modal-header">
+            <h2 class="modal-title" id="stallDetailTitle">Stall Details</h2>
+            <button class="close-modal" onclick="closeModal('stallDetailModal')">&times;</button>
+        </div>
+        <div id="stallDetailContent"></div>
+
+        <h3 style="margin-top: 20px; font-weight: 800; font-size: 18px;">Items for Sale</h3>
+        <div id="stallItemsList" style="margin-top:12px;"></div>
+
+        <h4 style="margin-top: 20px; font-weight: 700; font-size: 16px;">Add New Item</h4>
+        <form id="addItemForm" enctype="multipart/form-data" style="margin-top: 8px;">
+            <input type="hidden" id="itemStallId" value="">
+            <div class="modal-form-group">
+                <label class="modal-label" for="itemName">Item Name *</label>
+                <input type="text" class="modal-input" id="itemName" required>
+            </div>
+            <div style="display:flex; gap:12px;">
+                <div class="modal-form-group" style="flex:1;">
+                    <label class="modal-label" for="itemPrice">Price</label>
+                    <input type="number" step="0.01" class="modal-input" id="itemPrice" value="0">
+                </div>
+                <div class="modal-form-group" style="flex:1;">
+                    <label class="modal-label" for="itemStock">Stock</label>
+                    <input type="number" class="modal-input" id="itemStock" value="0">
+                </div>
+            </div>
+            <div class="modal-form-group">
+                <label class="modal-label" for="itemDesc">Description</label>
+                <input type="text" class="modal-input" id="itemDesc" placeholder="Brief item description">
+            </div>
+            <div class="modal-form-group">
+                <label class="modal-label" for="itemImage">Image</label>
+                <input type="file" class="modal-input" id="itemImage" accept="image/*" style="padding: 8px;">
+            </div>
+            <button type="submit" class="btn-save" style="width:100%;">+ Add Item</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/floor-management.js" asp-append-version="true"></script>
+}

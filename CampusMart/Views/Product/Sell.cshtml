@@ -1,0 +1,94 @@
+@{
+    ViewData["Title"] = "Sell";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <div id="postListingSection">
+        <div class="form-header animate-fade-in">
+            <h1 class="form-title">Post a New Listing</h1>
+            <p class="form-subtitle">Turn your unused textbooks, gadgets, and campus essentials into cash. Reach thousands of students securely.</p>
+        </div>
+        <div class="sell-form animate-fade-in delay-1">
+            <div class="upload-zone">
+                <span class="upload-icon">📸</span>
+                <h3 class="upload-text">Drop images here or click to upload</h3>
+                <p class="upload-subtext">Add up to 5 high-quality photos (JPG, PNG). Max 5MB per file.</p>
+                <input type="file" id="listingImages" style="display:none;" accept="image/*" multiple>
+            </div>
+            <form asp-controller="Product" asp-action="Sell" method="post">
+                <div class="form-group">
+                    <label class="form-label">Item Title</label>
+                    <input type="text" name="Title" class="form-input" placeholder="e.g. Calculus Early Transcendentals 9th Edition" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Price ($)</label>
+                        <input type="number" name="Price" class="form-input" placeholder="0.00" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select name="CategoryId" class="form-select" required>
+                            <option value="">Select a category...</option>
+                            <option value="1">Textbooks &amp; Academics</option>
+                            <option value="2">Electronics &amp; Gadgets</option>
+                            <option value="3">Dorm Essentials</option>
+                            <option value="4">Clothing &amp; Apparel</option>
+                            <option value="7">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Condition</label>
+                    <select name="Condition" class="form-select" required>
+                        <option>Brand New (Sealed)</option>
+                        <option>Like New (No signs of wear)</option>
+                        <option>Good (Minor wear, fully functional)</option>
+                        <option>Fair (Visible wear, works fine)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea name="Description" class="form-textarea" placeholder="Describe the item, note any flaws, and mention what is included..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Publish Listing</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="activeListingsSection" style="display:none;">
+        <div class="form-header animate-fade-in">
+            <h1 class="form-title">My Active Listings</h1>
+            <p class="form-subtitle">Manage your current listings and view past sales.</p>
+        </div>
+        <div class="history-list animate-fade-in delay-1">
+            <div class="history-card">
+                <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=2000&auto=format&fit=crop" alt="Book" class="history-img">
+                <div class="history-details">
+                    <h3 class="history-title">Calculus Early Transcendentals 9th Ed</h3>
+                    <div class="history-meta"><span>Listed: Oct 12, 2023</span><span>Views: 45</span></div>
+                </div>
+                <div class="history-price">$85.00</div>
+                <span class="status-badge status-active">Active</span>
+                <div class="history-actions">
+                    <button class="btn-small">Edit</button>
+                    <button class="btn-small danger">Del</button>
+                </div>
+            </div>
+            <div class="history-card">
+                <img src="https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?q=80&w=2000&auto=format&fit=crop" alt="Laptop" class="history-img">
+                <div class="history-details">
+                    <h3 class="history-title">MacBook Pro M1 2020</h3>
+                    <div class="history-meta"><span>Sold: Sep 05, 2023</span><span>Buyer: Sarah J.</span></div>
+                </div>
+                <div class="history-price">$800.00</div>
+                <span class="status-badge status-sold">Sold</span>
+                <div class="history-actions"><button class="btn-small">View Receipt</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/seller.js" asp-append-version="true"></script>
+}

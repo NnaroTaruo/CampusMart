@@ -1,0 +1,31 @@
+# Build output
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Node dependencies and logs
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+appsettings.Local.json
+
+# Local databases and runtime files
+*.db
+*.db-shm
+*.db-wal
+*.mdf
+*.ldf
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,252 @@
+@model IEnumerable<CampusMart.Models.Entities.Stall>
+@{
+    ViewData["Title"] = "Campus Marketplace";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    var floors = ViewBag.Floors as List<CampusMart.Models.Entities.Floor> ?? new List<CampusMart.Models.Entities.Floor>();
+    var selectedFloor = ViewBag.SelectedFloor as CampusMart.Models.Entities.Floor;
+}
+
+@functions {
+    bool IsStallOpen(string openTime, string closeTime) {
+        if (string.IsNullOrEmpty(openTime) || string.IsNullOrEmpty(closeTime)) return false;
+        var now = DateTime.Now;
+        var current = now.Hour * 60 + now.Minute;
+        var parts1 = openTime.Split(':');
+        var parts2 = closeTime.Split(':');
+        if (parts1.Length < 2 || parts2.Length < 2) return false;
+        var open = int.Parse(parts1[0]) * 60 + int.Parse(parts1[1]);
+        var close = int.Parse(parts2[0]) * 60 + int.Parse(parts2[1]);
+        return current >= open && current < close;
+    }
+
+    string FormatTime(string t) {
+        if (string.IsNullOrEmpty(t)) return "";
+        var parts = t.Split(':');
+        if (parts.Length < 2) return t;
+        var h = int.Parse(parts[0]);
+        var m = int.Parse(parts[1]);
+        var ampm = h >= 12 ? "PM" : "AM";
+        var hour = h % 12;
+        if (hour == 0) hour = 12;
+        return $"{hour}:{m:D2} {ampm}";
+    }
+}
+
+<div class="dashboard-container">
+    <div class="marketplace-header animate-fade-in">
+        <div class="header-left">
+            <h2 class="section-title">Campus Marketplace</h2>
+            <p class="header-desc">Browse exclusive student-run stalls organized by building floors. Each floor features curated vendors with high-quality academics and essentials.</p>
+        </div>
+        <div class="header-right">
+            <div class="building-status-label">Building Status</div>
+            <div class="building-name">Main Academic Hall</div>
+        </div>
+    </div>
+
+    @if (floors.Any())
+    {
+        <div class="floor-tabs animate-fade-in delay-1">
+            @foreach (var f in floors)
+            {
+                var isActive = selectedFloor != null && f.Id == selectedFloor.Id;
+                <a asp-action="Index" asp-route-floorId="@f.Id" class="floor-tab @(isActive ? "active" : "")" style="text-decoration:none;">
+                    <span class="floor-label">Floor</span>
+                    <span class="floor-num">@f.FloorNumber</span>
+                </a>
+            }
+        </div>
+
+        @if (selectedFloor != null)
+        {
+            var stallCount = Model.Count();
+            var capacity = selectedFloor.Capacity;
+            <div class="map-card animate-fade-in delay-1">
+                <div style="position:absolute;inset:0;background:linear-gradient(90deg,#1f2022 0%,#2a2c30 50%,#1f2022 100%);"></div>
+                <div style="position:absolute;inset:0;background-image:repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(255,255,255,.03) 40px,rgba(255,255,255,.03) 41px),repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(255,255,255,.03) 40px,rgba(255,255,255,.03) 41px);"></div>
+                <div class="map-content">
+                    <h2 class="map-title">@selectedFloor.Name</h2>
+                    <p class="map-sub">Current Occupancy: @stallCount of @capacity stalls</p>
+                    <div class="map-badges">
+                        @if (capacity - stallCount > 0)
+                        {
+                            <span class="map-badge green">@(capacity - stallCount) Vacancies</span>
+                        }
+                        else
+                        {
+                            <span class="map-badge yellow">Fully Occupied</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="animate-fade-in delay-1" style="text-align:center; padding:40px; background:#141417; border-radius:12px; border:1px solid var(--border-subtle); margin-bottom:20px;">
+            <span style="font-size:48px; display:block; margin-bottom:12px;">🏗️</span>
+            <h3 style="color:#fff; font-size:18px; font-weight:700;">Marketplace Coming Soon</h3>
+            <p style="color:var(--text-muted); font-size:14px;">The admin team is setting up floors and stalls. Check back soon!</p>
+        </div>
+    }
+
+    <div class="stalls-header animate-fade-in delay-2">
+        <h3 class="stalls-title">Active Stalls@(selectedFloor != null ? $" — Floor {selectedFloor.FloorNumber}" : "")</h3>
+        <div class="view-toggles">
+            <button class="view-btn active" id="btnGridView" onclick="setStallsView('grid')">⊞</button>
+            <button class="view-btn" id="btnListView" onclick="setStallsView('list')">≡</button>
+        </div>
+    </div>
+
+    <div class="stalls-grid animate-fade-in delay-2" id="stallsContainer">
+        @if (Model != null && Model.Any())
+        {
+            var stallIndex = 0;
+            foreach (var s in Model)
+            {
+                stallIndex++;
+                var open = IsStallOpen(s.OpenTime, s.CloseTime);
+                var statusColor = open ? "#79e7a3" : "#ff8d8d";
+                var statusText = open ? "Open" : "Closed";
+                <div class="stall-card">
+                    <div class="stall-img-wrapper">
+                        <span class="stall-badge">STALL @stallIndex/@(Model.Count())</span>
+                        @if (!string.IsNullOrEmpty(s.ImageUrl))
+                        {
+                            <img src="@s.ImageUrl" alt="@s.Name" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">
+                        }
+                        else
+                        {
+                            <div style="position:absolute;inset:0;background:radial-gradient(circle at center,#1a2a3a 0%,#0a101a 100%);display:flex;align-items:center;justify-content:center;">
+                                <div style="width:40px;height:40px;border:2px solid #3b82f6;border-radius:50%;box-shadow:0 0 20px #3b82f6;"></div>
+                            </div>
+                        }
+                    </div>
+                    <div class="stall-content">
+                        <div class="stall-header-row">
+                            <h4 class="stall-name">@s.Name</h4>
+                            <span style="font-size:11px; font-weight:800; padding:3px 8px; border-radius:999px; background:@(statusColor)22; color:@statusColor; border:1px solid @(statusColor)44;">@statusText</span>
+                        </div>
+                        <p class="stall-desc">@(string.IsNullOrEmpty(s.Description) ? "Campus seller stall" : s.Description)</p>
+                        <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">
+                            🕐 @FormatTime(s.OpenTime) — @FormatTime(s.CloseTime) · @s.Category
+                        </div>
+                        <div class="stall-footer">
+                            <div class="stall-rating"><span class="star-icon">★</span> @s.OwnerName</div>
+                            <a asp-controller="Stall" asp-action="Index" asp-route-id="@s.Id" class="btn-enter" style="text-decoration:none; text-align:center;">Enter Stall</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div style="grid-column:1/-1; text-align:center; padding:60px 0; color:var(--text-muted);">
+                <span style="font-size:48px; display:block; margin-bottom:12px;">🏪</span>
+                <h3 style="font-weight:700; color:#fff;">No active stalls on this floor</h3>
+                <p>Check other floors or come back later!</p>
+            </div>
+        }
+    </div>
+
+    <!-- STUDENT PEER TO PEER PRODUCTS -->
+    <div class="stalls-header animate-fade-in delay-2" style="margin-top: 40px;">
+        <h3 class="stalls-title">Student Listings (Peer-to-Peer)</h3>
+        <p style="color:var(--text-muted); font-size:13px;">Items listed by other students across the campus.</p>
+    </div>
+
+    <div class="stalls-grid animate-fade-in delay-2">
+        @{
+            var peerProducts = ViewBag.PeerProducts as List<CampusMart.Models.Entities.Product> ?? new List<CampusMart.Models.Entities.Product>();
+        }
+        
+        @if (peerProducts.Any())
+        {
+            foreach (var prod in peerProducts)
+            {
+                <div class="stall-card">
+                    <div class="stall-img-wrapper" style="height: 140px;">
+                        @if (!string.IsNullOrEmpty(prod.ImageUrl))
+                        {
+                            <img src="@prod.ImageUrl" alt="@prod.Name" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">
+                        }
+                        else
+                        {
+                            <div style="position:absolute;inset:0;background:radial-gradient(circle at center,#1a2a3a 0%,#0a101a 100%);display:flex;align-items:center;justify-content:center; font-size:40px;">
+                                🛒
+                            </div>
+                        }
+                    </div>
+                    <div class="stall-content" style="padding: 16px;">
+                        <div class="stall-header-row">
+                            <h4 class="stall-name" style="font-size: 16px;">@prod.Name</h4>
+                            <span style="font-size:14px; font-weight:800; color:#79e7a3;">₱@prod.Price.ToString("0.00")</span>
+                        </div>
+                        <p class="stall-desc" style="font-size:12px; margin-bottom:8px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">@(string.IsNullOrEmpty(prod.Description) ? "Student posted item" : prod.Description)</p>
+                        
+                        <div style="font-size:12px; color:var(--text-muted); margin-bottom:12px; display:flex; justify-content:space-between;">
+                            <span>@prod.Category?.Name</span>
+                            <span>Stock: @prod.Stock</span>
+                        </div>
+                        
+                        <div class="stall-footer" style="margin-top:auto; padding-top:12px; border-top:1px solid rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:space-between;">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <div style="width:24px; height:24px; border-radius:50%; background:var(--primary); color:#111; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold;">
+                                    @(prod.Seller?.FullName?.Substring(0,1) ?? "U")
+                                </div>
+                                <span style="font-size:12px; color:#fff;">@prod.Seller?.FirstName</span>
+                            </div>
+                            
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                <input type="hidden" name="productId" value="@prod.Id" />
+                                <button type="submit" class="btn" style="background:#3b82f6; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-weight:600; cursor:pointer; font-size:12px;">Add to Cart</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div style="grid-column:1/-1; text-align:center; padding:40px 0; color:var(--text-muted); background:#141417; border-radius:12px; border:1px dashed var(--border-subtle);">
+                <h3 style="font-weight:700; color:#fff; margin-bottom: 8px;">No Student Listings</h3>
+                <p>There are no approved peer-to-peer items available right now.</p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function setStallsView(viewType) {
+            const container = document.getElementById('stallsContainer');
+            const gridBtn = document.getElementById('btnGridView');
+            const listBtn = document.getElementById('btnListView');
+
+            if (viewType === 'list') {
+                container.classList.remove('stalls-grid');
+                container.classList.add('stalls-list');
+                if(!document.getElementById('listStyle')) {
+                    const style = document.createElement('style');
+                    style.id = 'listStyle';
+                    style.innerHTML = `
+                        .stalls-list { display: flex; flex-direction: column; gap: 16px; }
+                        .stalls-list .stall-card { flex-direction: row; align-items: center; }
+                        .stalls-list .stall-img-wrapper { height: 120px; width: 160px; flex-shrink: 0; }
+                        .stalls-list .stall-content { flex: 1; padding: 16px; }
+                        .stalls-list .stall-desc { margin-bottom: 0; }
+                        .stalls-list .stall-footer { margin-top: auto; }
+                    `;
+                    document.head.appendChild(style);
+                }
+                listBtn.classList.add('active');
+                gridBtn.classList.remove('active');
+            } else {
+                container.classList.remove('stalls-list');
+                container.classList.add('stalls-grid');
+                gridBtn.classList.add('active');
+                listBtn.classList.remove('active');
+            }
+        }
+    </script>
+}

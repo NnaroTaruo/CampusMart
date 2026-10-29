@@ -1,0 +1,24 @@
+@{
+    ViewData["Title"] = "Stall Directory";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="section-title">Stall Directory</h2>
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>Floor</th>
+                <th>Stall</th>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody id="stallDirectoryBody"></tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="~/js/floor-management.js" asp-append-version="true"></script>
+}

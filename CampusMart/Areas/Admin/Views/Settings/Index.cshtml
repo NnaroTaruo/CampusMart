@@ -1,0 +1,28 @@
+@{
+    ViewData["Title"] = "Admin Settings";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="section-title" style="margin-top:0;">Platform Settings</h2>
+<div class="section-subtitle">Configure system-wide settings for CampusMart.</div>
+
+<div class="panel" style="margin-top: 24px;">
+    <h3 class="panel-title">General Settings</h3>
+    <form>
+        <div style="margin-bottom: 16px;">
+            <label style="display:block; margin-bottom:8px; color: var(--text-muted); font-size:14px; font-weight:600;">Platform Name</label>
+            <input type="text" value="CampusMart" class="search" style="width: 100%; max-width: 400px; border-radius: 8px;">
+        </div>
+        <div style="margin-bottom: 16px;">
+            <label style="display:block; margin-bottom:8px; color: var(--text-muted); font-size:14px; font-weight:600;">Contact Email</label>
+            <input type="email" value="admin@campusmart.local" class="search" style="width: 100%; max-width: 400px; border-radius: 8px;">
+        </div>
+        <div style="margin-bottom: 16px;">
+            <label style="display:block; margin-bottom:8px; color: var(--text-muted); font-size:14px; font-weight:600;">Maintenance Mode</label>
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" style="width: 18px; height: 18px;"> Enable Maintenance Mode
+            </label>
+        </div>
+        <button type="button" class="btn" style="background: var(--primary); color: #111;">Save Settings</button>
+    </form>
+</div>

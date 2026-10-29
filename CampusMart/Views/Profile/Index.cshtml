@@ -1,0 +1,107 @@
+@model CampusMart.Models.ViewModels.User.ProfileViewModel
+@{
+    ViewData["Title"] = "Edit Profile";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="profile-page">
+    <div class="page-header animate-in">
+        <a asp-controller="HomeUser" asp-action="Index" class="back-btn" title="Back to Dashboard">←</a>
+        <div><h1 class="page-title">Edit Profile</h1><p class="page-subtitle">Manage your personal information and preferences</p></div>
+    </div>
+
+    <div class="avatar-section animate-in d1">
+        <div class="avatar-wrapper" onclick="document.getElementById('avatarInput').click()">
+            <img src="@(string.IsNullOrEmpty(Model?.AvatarUrl) ? $"https://ui-avatars.com/api/?name={Model?.FirstName}+{Model?.LastName}&background=222&color=fff&size=220" : Model.AvatarUrl)" alt="Profile" class="avatar-large" id="avatarPreview">
+            <div class="avatar-edit-overlay">📷</div>
+        </div>
+        <input type="file" name="AvatarFile" id="avatarInput" form="profileForm" style="display:none;" accept="image/*">
+        <div class="avatar-details">
+            <h2 id="displayName">@(Model?.FirstName) @(Model?.LastName)</h2>
+            <span class="role-badge">Premium Member</span>
+            <div class="avatar-meta">
+                <span>ID:</span> @Model?.StudentId &nbsp;·&nbsp; <span>Dept:</span> @Model?.Department<br>
+                <span>Email:</span> @Model?.Email
+            </div>
+        </div>
+        <div class="avatar-actions">
+            <button class="btn-upload" onclick="document.getElementById('avatarInput').click()">Upload Photo</button>
+            <button class="btn-remove" id="removeAvatarBtn">Remove</button>
+        </div>
+    </div>
+
+    <form id="profileForm" asp-controller="Profile" asp-action="Update" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="validation-error" style="color: #ff8f8f; margin-bottom: 20px; text-align: center;"></div>
+        <div class="form-section animate-in d2">
+            <div class="form-section-header">
+                <span class="form-section-icon">👤</span>
+                <h3 class="form-section-title">Personal Information</h3>
+                <span class="form-section-desc">Fields with 🔒 cannot be changed</span>
+            </div>
+            <div class="form-grid">
+                <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" id="firstName" asp-for="FirstName"><span asp-validation-for="FirstName" style="color:#ff8f8f; font-size:12px;"></span></div>
+                <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input" id="lastName" asp-for="LastName"><span asp-validation-for="LastName" style="color:#ff8f8f; font-size:12px;"></span></div>
+                <div class="form-group"><label class="form-label">Student ID <span class="lock-icon">🔒</span></label><input type="text" class="form-input" value="@Model?.StudentId" readonly></div>
+                <div class="form-group"><label class="form-label">Department <span class="lock-icon">🔒</span></label><input type="text" class="form-input" value="@Model?.Department" readonly></div>
+                <div class="form-group">
+                    <label class="form-label">Year Level</label>
+                    @{
+                        var yearLevels = new[] { "1st Year", "2nd Year", "3rd Year", "4th Year", "5th Year" };
+                        var currentYear = Model?.YearLevel ?? "3rd Year";
+                    }
+                    <select class="form-select" name="YearLevel">
+                        @foreach (var yr in yearLevels)
+                        {
+                            if (yr == currentYear)
+                            {
+                                <option selected="selected" value="@yr">@yr</option>
+                            }
+                            else
+                            {
+                                <option value="@yr">@yr</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group"><label class="form-label">Section</label><input type="text" class="form-input" asp-for="Section"><span asp-validation-for="Section" style="color:#ff8f8f; font-size:12px;"></span></div>
+            </div>
+        </div>
+
+        <div class="form-section animate-in d3">
+            <div class="form-section-header"><span class="form-section-icon">📧</span><h3 class="form-section-title">Contact Information</h3></div>
+            <div class="form-grid">
+                <div class="form-group"><label class="form-label">Email <span class="lock-icon">🔒</span></label><input type="email" class="form-input" value="@Model?.Email" readonly></div>
+                <div class="form-group"><label class="form-label">Phone Number</label><input type="tel" class="form-input" asp-for="Phone" placeholder="+63 9XX XXX XXXX"><span asp-validation-for="Phone" style="color:#ff8f8f; font-size:12px;"></span></div>
+                <div class="form-group full-width"><label class="form-label">Address</label><input type="text" class="form-input" asp-for="Address" placeholder="Enter your address"><span asp-validation-for="Address" style="color:#ff8f8f; font-size:12px;"></span></div>
+            </div>
+        </div>
+
+        <div class="form-section animate-in d4">
+            <div class="form-section-header"><span class="form-section-icon">✏️</span><h3 class="form-section-title">About You</h3></div>
+            <div class="form-grid">
+                <div class="form-group full-width"><label class="form-label">Bio</label><textarea class="form-textarea" id="bioInput" name="Bio" maxlength="200" placeholder="Tell other students a bit about yourself...">@Model?.Bio</textarea></div>
+                <div class="char-count full-width"><span id="charCount">0</span> / 200</div>
+            </div>
+        </div>
+
+        <div class="action-bar animate-in d4">
+            <a asp-controller="UserDashboard" asp-action="Index" class="btn-cancel" style="text-decoration:none;">Cancel</a>
+            <button type="submit" class="btn-save-profile" id="saveBtn">Save Changes</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+            document.addEventListener("DOMContentLoaded", function() {
+                if (typeof showToast === 'function') {
+                    showToast('@Html.Raw(TempData["SuccessMessage"])', 'success');
+                }
+            });
+            </text>
+        }
+    </script>
+}

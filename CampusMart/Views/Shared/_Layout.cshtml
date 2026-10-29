@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CampusMart</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CampusMart.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/tailwind.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="sticky top-0 z-50 border-b border-white/10 bg-campus-ink py-3">
+            <div class="cm-container">
+
+                <div class="flex items-center justify-between">
+                <a class="text-xl font-bold text-white no-underline transition hover:text-campus-blue"
+                       asp-area=""
+                       asp-controller="Home"
+                       asp-action="HomeIndex">
+                    CampusMart
+                </a>
+
+                <button class="border-0 bg-transparent px-2 py-1 text-xl text-white lg:hidden"
+                        type="button"
+                        aria-controls="mainNavbar"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span aria-hidden="true">Menu</span>
+                </button>
+                </div>
+
+                <div class="hidden pt-4 lg:flex lg:items-center lg:justify-between" id="mainNavbar">
+                    <ul class="flex flex-col gap-1 lg:flex-row lg:items-center">
+                        <li class="nav-item">
+                            <a class="cm-nav-link block rounded-lg px-3 py-2 text-sm font-semibold text-campus-muted transition hover:bg-white/[0.06] hover:text-white"
+                               asp-area=""
+                               asp-controller="Home"
+                               asp-action="HomeIndex">Home</a>
+                        </li>
+                        <li>
+                            <a class="block rounded-md bg-slate-800 px-3 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
+                               asp-area=""
+                               asp-controller="Store"
+                               asp-action="Index">Store</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="cm-nav-link block rounded-lg px-3 py-2 text-sm font-semibold text-campus-muted transition hover:bg-white/[0.06] hover:text-white" href="/Home/HomeIndex#categories">Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="cm-nav-link block rounded-lg px-3 py-2 text-sm font-semibold text-campus-muted transition hover:bg-white/[0.06] hover:text-white"
+                               asp-area=""
+                               asp-controller="Home"
+                               asp-action="About">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="cm-nav-link block rounded-lg px-3 py-2 text-sm font-semibold text-campus-muted transition hover:bg-white/[0.06] hover:text-white"
+                               asp-area=""
+                               asp-controller="Home"
+                               asp-action="Contact">Contact</a>
+                        </li>
+                    </ul>   
+                    
+                    <ul class="mt-4 flex flex-col gap-2 lg:mt-0 lg:flex-row">
+                        <li class="nav-item">
+                            <a asp-area=""
+                               asp-controller="Account"
+                               asp-action="Login"
+                               class="cm-button-secondary w-full lg:w-auto">Login</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a asp-area=""
+                               asp-controller="Account"
+                               asp-action="Register"
+                               class="cm-button-primary w-full lg:w-auto">Register</a>
+                        </li> 
+                    </ul>
+                </div>
+
+            </div>
+        </nav>
+    </header>
+    <main role="main" class="min-h-[70vh]">
+            @RenderBody()
+    </main>
+
+    <footer class="cm-footer border-t border-white/10">
+        <div class="cm-container">
+            <div class="flex flex-col gap-3 py-6 md:flex-row md:items-center md:justify-between">
+                <div>
+                    <a class="text-lg font-extrabold text-white no-underline"
+                           asp-area=""
+                           asp-controller="Home"
+                           asp-action="HomeIndex"
+                           >
+                        CampusMart
+                    </a>
+                </div>
+                <div class="text-center">
+                    <p class="mb-0 text-sm text-campus-muted">&copy; 2026 CampusMart. Solo development by Ronan Antoque.</p>
+                </div>
+                <div class="text-center md:text-right">
+                    <span class="text-sm font-semibold text-campus-blue">Campus shopping made simple</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        document.querySelector('[aria-controls="mainNavbar"]')?.addEventListener('click', function () {
+            const menu = document.getElementById('mainNavbar');
+            const isOpen = !menu.classList.toggle('hidden');
+            this.setAttribute('aria-expanded', isOpen.toString());
+        });
+    </script>
+    <script>
+        function showToast(message, isError = false) {
+            let toast = document.getElementById('globalToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'globalToast';
+                toast.className = 'toast-notify';
+                document.body.appendChild(toast);
+            }
+            if (isError) {
+                toast.classList.add('toast-error');
+                toast.textContent = message;
+            } else {
+                toast.classList.remove('toast-error');
+                toast.textContent = message;
+            }
+            // Trigger reflow
+            void toast.offsetWidth;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+            document.addEventListener("DOMContentLoaded", function() {
+                showToast('@Html.Raw(TempData["SuccessMessage"])', false);
+            });
+            </text>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+            document.addEventListener("DOMContentLoaded", function() {
+                showToast('@Html.Raw(TempData["ErrorMessage"])', true);
+            });
+            </text>
+        }
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "campusmart-frontend",
+  "private": true,
+  "scripts": {
+    "css:build": "tailwindcss -i ./Styles/tailwind.css -o ./wwwroot/css/tailwind.css --minify",
+    "css:watch": "tailwindcss -i ./Styles/tailwind.css -o ./wwwroot/css/tailwind.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}

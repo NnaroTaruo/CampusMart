@@ -1,0 +1,57 @@
+@using Microsoft.AspNetCore.Identity
+@using CampusMart.Models.Entities
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var appUser = await UserManager.GetUserAsync(User);
+    var adminDisplayName = appUser?.FullName ?? (User.Identity?.Name ?? "Admin");
+    var initial = adminDisplayName.Substring(0, 1).ToUpperInvariant();
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var links = new[] {
+        new { Controller = "Dashboard", Icon = "floors", Label = "Floor management" },
+        new { Controller = "Listing", Icon = "listings", Label = "Listing approvals" },
+        new { Controller = "UserManagement", Icon = "students", Label = "Student directory" },
+        new { Controller = "Order", Icon = "orders", Label = "Store oversight" }
+    };
+}
+<aside class="admin-sidebar" id="adminSidebar" aria-label="Administration">
+    <a class="admin-brand" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+        @await Html.PartialAsync("_BrandMark")
+        <span>CampusMart<span class="brand-period">.</span><small>Administration</small></span>
+    </a>
+    <div class="nav-group-label">Workspace</div>
+    <nav class="admin-navigation" aria-label="Main navigation">
+        @foreach (var link in links)
+        {
+            var active = currentController.Equals(link.Controller, StringComparison.OrdinalIgnoreCase);
+            <a asp-area="Admin" asp-controller="@link.Controller" asp-action="Index"
+               class="admin-nav @(active ? "active" : "")" aria-current="@(active ? "page" : null)">
+                @await Html.PartialAsync("_AdminIcon", link.Icon)<span>@link.Label</span>
+            </a>
+        }
+    </nav>
+    <div class="admin-sidebar-bottom">
+        <nav class="admin-navigation" aria-label="Account navigation">
+            <a asp-area="" asp-controller="Home" asp-action="HomeIndex" class="admin-nav">
+                @await Html.PartialAsync("_AdminIcon", "orders")<span>View marketplace</span>
+            </a>
+            <a asp-area="Admin" asp-controller="Settings" asp-action="Index" class="admin-nav @(currentController == "Settings" ? "active" : "")" aria-current="@(currentController == "Settings" ? "page" : null)">
+                @await Html.PartialAsync("_AdminIcon", "settings")<span>Settings</span>
+            </a>
+            <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                <button type="submit" class="admin-nav">@await Html.PartialAsync("_AdminIcon", "logout")<span>Sign out</span></button>
+            </form>
+        </nav>
+        <button class="admin-account profile-trigger" type="button" aria-label="Edit your profile">
+            @if (!string.IsNullOrEmpty(appUser?.AvatarUrl))
+            {
+                <img src="@appUser.AvatarUrl" alt="" id="sidebarAvatar" class="admin-avatar" />
+            }
+            else
+            {
+                <span class="admin-avatar avatar-initial" aria-hidden="true">@initial</span>
+            }
+            <span class="admin-account-name"><span id="sidebarName">@adminDisplayName</span><small>Administrator</small></span>
+            @await Html.PartialAsync("_AdminIcon", "chevron")
+        </button>
+    </div>
+</aside>

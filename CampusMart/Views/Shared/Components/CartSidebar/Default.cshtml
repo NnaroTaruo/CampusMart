@@ -1,0 +1,44 @@
+@model CampusMart.Models.ViewModels.User.CartViewModel
+
+<div class="cart-header">
+    <h2>Your Cart</h2>
+    <button class="cart-close-btn" id="closeCartBtn">&times;</button>
+</div>
+<div class="cart-body">
+    @if (Model.Items == null || !Model.Items.Any())
+    {
+        <div style="padding: 24px; text-align: center; color: var(--text-muted);">
+            <div style="font-size: 32px; margin-bottom: 12px;">🛒</div>
+            <p>Your cart is empty.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var item in Model.Items)
+        {
+            <div class="cart-item-mini">
+                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                {
+                    <img src="@item.ImageUrl" alt="@item.ProductName">
+                }
+                else
+                {
+                    <div style="width: 50px; height: 50px; background: #333; border-radius: 8px; display:flex; align-items:center; justify-content:center; color:#777;">🛍️</div>
+                }
+                <div class="cart-item-info">
+                    <div class="cart-item-title">@item.ProductName</div>
+                    <div class="cart-item-qty">Qty: @item.Quantity</div>
+                </div>
+                <div class="cart-item-price">₱@item.Price.ToString("0.00")</div>
+            </div>
+        }
+    }
+</div>
+<div class="cart-footer">
+    <div class="cart-total-row">
+        <span>Total</span>
+        <span>₱@Model.Subtotal.ToString("0.00")</span>
+    </div>
+    <a asp-controller="Order" asp-action="Checkout" class="btn-checkout">Proceed to Checkout</a>
+    <a asp-controller="Cart" asp-action="Index" style="display:block; text-align:center; color:var(--text-muted); font-size:12px; margin-top:12px; text-decoration:none;">View Full Cart</a>
+</div>

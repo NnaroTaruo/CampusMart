@@ -1,0 +1,66 @@
+@{
+    ViewData["Title"] = "About";
+}
+
+<section class="border-b border-white/10 py-14 md:py-16">
+    <div class="cm-container">
+        <p class="cm-eyebrow mb-3">About</p>
+        <h1 class="cm-page-title">Built for campus life</h1>
+        <p class="cm-page-lead mt-4">
+            CampusMart helps students and faculty browse campus products quickly, place orders with confidence,
+            and pick up items without long lines.
+        </p>
+    </div>
+</section>
+
+<section class="py-12 md:py-14">
+    <div class="cm-container">
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-slate-50">What CampusMart focuses on</h2>
+            <p class="mt-2 text-campus-muted">Simple flows, trusted sellers, and reliable on-campus pickup.</p>
+        </div>
+
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <article class="cm-surface p-5">
+                <h3 class="text-base font-semibold text-slate-100">Student-first experience</h3>
+                <p class="mt-2 text-sm text-campus-muted">Browse, filter, and order in a clear and fast workflow.</p>
+            </article>
+            <article class="cm-surface p-5">
+                <h3 class="text-base font-semibold text-slate-100">Trusted campus access</h3>
+                <p class="mt-2 text-sm text-campus-muted">Accounts are intended for students and faculty to keep transactions safe.</p>
+            </article>
+            <article class="cm-surface p-5">
+                <h3 class="text-base font-semibold text-slate-100">Support for campus sellers</h3>
+                <p class="mt-2 text-sm text-campus-muted">Sellers can list products and serve their campus community in one place.</p>
+            </article>
+            <article class="cm-surface p-5">
+                <h3 class="text-base font-semibold text-slate-100">Reliable updates</h3>
+                <p class="mt-2 text-sm text-campus-muted">Clear status and stock visibility help users make better purchase decisions.</p>
+            </article>
+            <article class="cm-surface p-5">
+                <h3 class="text-base font-semibold text-slate-100">Mobile-friendly interface</h3>
+                <p class="mt-2 text-sm text-campus-muted">Works smoothly on phone and desktop for everyday campus use.</p>
+            </article>
+            <article class="cm-surface p-5">
+                <h3 class="text-base font-semibold text-slate-100">Continuous improvement</h3>
+                <p class="mt-2 text-sm text-campus-muted">The platform is improved over time based on real usage and feedback.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="border-t border-white/10 py-12 md:py-14">
+    <div class="cm-container">
+        <div class="cm-surface p-6 md:p-8">
+            <p class="cm-eyebrow mb-3">Developer</p>
+            <h2 class="text-2xl font-bold text-slate-50">Solo development by Ronan Antoque</h2>
+            <p class="mt-3 max-w-3xl text-campus-muted">
+                CampusMart is designed and developed as a solo project with a focus on maintainability,
+                usability, and practical campus commerce workflows.
+            </p>
+            <div class="mt-6">
+                <a asp-controller="Store" asp-action="Index" class="cm-button-primary">Browse the store</a>
+            </div>
+        </div>
+    </div>
+</section>

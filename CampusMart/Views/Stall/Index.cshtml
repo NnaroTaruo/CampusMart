@@ -1,0 +1,80 @@
+@model CampusMart.Models.Entities.Stall
+@{
+    ViewData["Title"] = Model.Name;
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <div class="page-header animate-in">
+        <a asp-controller="UserDashboard" asp-action="Index" class="back-btn">←</a>
+        <div>
+            <h1 class="page-title">@Model.Name</h1>
+            <p class="page-subtitle">@Model.Description</p>
+        </div>
+    </div>
+
+    <div class="stall-details animate-in d1" style="background: #121418; padding: 24px; border-radius: 12px; margin-bottom: 30px; border: 1px solid var(--border-subtle);">
+        <div style="display:flex; align-items:center; gap: 20px;">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" alt="@Model.Name" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);" />
+            }
+            else
+            {
+                <div style="width: 80px; height: 80px; background: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size:32px; color: #111; font-weight: 900;">
+                    @(string.IsNullOrEmpty(Model.Name) ? "S" : Model.Name.Substring(0, 1).ToUpper())
+                </div>
+            }
+            <div>
+                <h2 style="margin:0; font-size: 24px; font-weight: 800;">@Model.Name</h2>
+                <div style="color: var(--text-muted); font-size: 14px; margin-top: 4px;">Seller: @Model.OwnerName • @Model.Category</div>
+            </div>
+            <button class="btn-enter" style="margin-left: auto;">Follow Stall</button>
+        </div>
+    </div>
+
+    <h3 style="margin-bottom: 20px; font-weight: 800;">Available Products</h3>
+    
+    @if (!Model.StallItems.Any())
+    {
+        <div style="text-align: center; padding: 60px 20px; background: #121418; border-radius: 12px; border: 1px dashed var(--border-subtle);">
+            <div style="font-size: 48px; margin-bottom: 12px;">🛍️</div>
+            <h3 style="color: #fff; font-weight: 700;">No items available</h3>
+            <p style="color: var(--text-muted);">This stall currently has no approved items for sale.</p>
+        </div>
+    }
+    else
+    {
+        <div class="stalls-grid animate-in d2">
+            @foreach (var item in Model.StallItems)
+            {
+                <div class="stall-card">
+                    <div class="stall-img-wrapper">
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img src="@item.ImageUrl" alt="@item.Name" style="width:100%; height:100%; object-fit:cover;" />
+                        }
+                        else
+                        {
+                            <div style="width:100%; height:100%; background:#222; display:flex; align-items:center; justify-content:center; color:#555; font-size: 40px;">📦</div>
+                        }
+                    </div>
+                    <div class="stall-content">
+                        <div class="stall-header-row">
+                            <h4 class="stall-name">@item.Name</h4>
+                            <span class="stall-price">₱@item.Price.ToString("0.00")</span>
+                        </div>
+                        <p class="stall-desc" style="min-height: 40px;">@(string.IsNullOrEmpty(item.Description) ? "No description provided." : item.Description)</p>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Stock: @item.Stock</div>
+                        <div class="stall-footer">
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post" style="width: 100%;">
+                                <input type="hidden" name="stallItemId" value="@item.Id" /> 
+                                <button type="submit" class="btn-enter" style="width: 100%;">Add to Cart</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

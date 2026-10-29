@@ -1,0 +1,92 @@
+@model CampusMart.Models.ViewModels.User.OrderHistoryViewModel
+@{
+    ViewData["Title"] = "Order History";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <div class="page-header animate-in">
+        <a asp-controller="HomeUser" asp-action="Index" class="back-btn">←</a>
+        <div><h1 class="page-title">Order History</h1><p class="page-subtitle">Track your past purchases and transactions</p></div>
+    </div>
+
+    @if (Model.Orders.Any())
+    {
+        <div class="order-stats animate-in d1">
+            <div class="order-stat-card">
+                <span class="order-stat-icon">📦</span>
+                <div class="order-stat-num">@Model.Orders.Count</div>
+                <div class="order-stat-label">Total Orders</div>
+            </div>
+            <div class="order-stat-card">
+                <span class="order-stat-icon">💰</span>
+                <div class="order-stat-num">$@Model.Orders.Sum(o => o.TotalAmount).ToString("N0")</div>
+                <div class="order-stat-label">Total Spent</div>
+            </div>
+            <div class="order-stat-card">
+                <span class="order-stat-icon">✅</span>
+                <div class="order-stat-num">@Model.Orders.Count(o => o.Status == "Completed")</div>
+                <div class="order-stat-label">Completed</div>
+            </div>
+        </div>
+
+        <div class="history-list animate-fade-in delay-1">
+            @foreach (var order in Model.Orders)
+            {
+                <div class="order-card">
+                    <div class="order-card-header">
+                        <div class="order-card-id">
+                            <span style="font-size:12px;color:var(--text-muted);font-weight:600;">ORDER</span>
+                            <span style="font-size:18px;font-weight:800;color:#fff;">#@order.OrderId.ToString("D5")</span>
+                        </div>
+                        <div style="text-align:right;">
+                            <span class="status-badge @(order.Status == "Completed" ? "status-active" : "status-sold")">@order.Status</span>
+                            <div style="font-size:12px;color:var(--text-muted);margin-top:6px;">@order.CreatedAt.ToString("MMM dd, yyyy · h:mm tt")</div>
+                        </div>
+                    </div>
+
+                    <div class="order-items-preview">
+                        @foreach (var item in order.Items.Take(3))
+                        {
+                            <div class="order-item-row">
+                                <img src="@(item.ImageUrl ?? "https://via.placeholder.com/48")" alt="@item.ProductName" class="order-item-thumb">
+                                <div class="order-item-info">
+                                    <div style="font-size:14px;font-weight:600;color:#fff;">@item.ProductName</div>
+                                    <div style="font-size:12px;color:var(--text-muted);">Qty: @item.Quantity · $@item.Price.ToString("F2") each</div>
+                                </div>
+                                <div style="font-size:14px;font-weight:700;color:var(--primary);">$@((item.Price * item.Quantity).ToString("F2"))</div>
+                            </div>
+                        }
+                        @if (order.Items.Count > 3)
+                        {
+                            <div style="font-size:12px;color:var(--text-muted);padding:8px 0;">+ @(order.Items.Count - 3) more items</div>
+                        }
+                    </div>
+
+                    <div class="order-card-footer">
+                        <div>
+                            <span style="font-size:12px;color:var(--text-muted);">Payment: </span>
+                            <span style="font-size:13px;font-weight:600;color:#fff;">@(order.PaymentMethod ?? "Cash on Delivery")</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <div style="text-align:right;">
+                                <div style="font-size:12px;color:var(--text-muted);">Total</div>
+                                <div style="font-size:18px;font-weight:800;color:var(--primary);">$@order.TotalAmount.ToString("N0")</div>
+                            </div>
+                            <a asp-controller="Order" asp-action="Details" asp-route-id="@order.OrderId" class="btn-enter" style="padding:10px 20px;text-decoration:none;">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="cart-empty animate-in d1">
+            <span class="cart-empty-icon">📦</span>
+            <h3>No orders yet</h3>
+            <p>Your completed orders will appear here.</p>
+            <a asp-controller="HomeUser" asp-action="Index" class="btn-enter" style="display:inline-block;margin-top:16px;padding:12px 24px;">Start Shopping</a>
+        </div>
+    }
+</div>

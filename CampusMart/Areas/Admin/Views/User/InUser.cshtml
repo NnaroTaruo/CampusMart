@@ -1,0 +1,48 @@
+@{
+    ViewData["Title"] ??= "User Management";
+}
+
+<div id="userManagementSection" class="dashboard-container">
+    <div class="form-header animate-fade-in">
+        <h1 class="form-title">User Management</h1>
+        <p class="form-subtitle">Manage registered students and their access. Edit roles, suspend, or remove users.</p>
+    </div>
+
+    <div class="history-list animate-fade-in delay-1">
+        <!-- Sample User Card 1 -->
+        <div class="history-card">
+            <img src="https://ui-avatars.com/api/?name=Alex+Chen&background=222&color=fff" alt="Alex Chen" class="history-img" style="border-radius: 50%;">
+            <div class="history-details">
+                <h3 class="history-title">Alex Chen</h3>
+                <div class="history-meta">
+                    <span>ID: 21984422</span>
+                    <span>Joined: Jan 15, 2023</span>
+                </div>
+            </div>
+            <span class="status-badge" style="background: rgba(74, 222, 128, 0.1); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.2);">Active</span>
+            <div class="history-actions">
+                <button class="btn-small" type="button">Edit Role</button>
+                <button class="btn-small" type="button" style="border-color: rgba(245, 158, 11, 0.5); color: #f59e0b;">Suspend</button>
+                <button class="btn-small danger" type="button">Delete</button>
+            </div>
+        </div>
+
+        <!-- Sample User Card 2 -->
+        <div class="history-card">
+            <img src="https://ui-avatars.com/api/?name=Sarah+Jenkins&background=222&color=fff" alt="Sarah Jenkins" class="history-img" style="border-radius: 50%;">
+            <div class="history-details">
+                <h3 class="history-title">Sarah Jenkins</h3>
+                <div class="history-meta">
+                    <span>ID: 88392011</span>
+                    <span>Joined: Mar 02, 2023</span>
+                </div>
+            </div>
+            <span class="status-badge" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2);">Suspended</span>
+            <div class="history-actions">
+                <button class="btn-small" type="button">Edit Role</button>
+                <button class="btn-small" type="button" style="border-color: rgba(74, 222, 128, 0.5); color: #4ade80;">Unsuspend</button>
+                <button class="btn-small danger" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
